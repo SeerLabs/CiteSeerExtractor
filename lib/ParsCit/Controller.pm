@@ -158,10 +158,10 @@ sub extractCitationsImpl {
     my ($rCiteText, $rNormBodyText, $rBodyText) =
 	ParsCit::PreProcess::findCitationText(\$text);
     my ($citeFile, $bodyFile) = ("", "");
-    if ($bWriteSplit > 0) {
-	($citeFile, $bodyFile) =
-	    writeSplit($textFile, $rCiteText, $rBodyText);
-    }
+#     if ($bWriteSplit > 0) {
+# 	($citeFile, $bodyFile) =
+# 	    writeSplit($textFile, $rCiteText, $rBodyText);
+#     }
 
     my $rRawCitations = ParsCit::PreProcess::segmentCitations($rCiteText);
     my @citations = ();
@@ -238,16 +238,16 @@ sub buildXMLResponse {
     cleanXML(\$l_algName);
     cleanXML(\$l_algVersion);
 
-    my $xml = "<algorithm name=\"$l_algName\" ".
-	"version=\"$l_algVersion\">\n";
-    $xml .= "<citationList>\n";
+#     my $xml = "<algorithm name=\"$l_algName\" ".
+# 	"version=\"$l_algVersion\">\n";
+    my $xml .= "<citationList>\n";
 
     foreach my $citation (@$rCitations) {
 	$xml .= $citation->toXML();
     }
 
     $xml .= "</citationList>\n";
-    $xml .= "</algorithm>\n";
+#     $xml .= "</algorithm>\n";
 
     return \$xml;
 
