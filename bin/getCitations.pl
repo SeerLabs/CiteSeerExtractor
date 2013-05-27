@@ -4,7 +4,6 @@ use strict;
 use FindBin;
 use lib "$FindBin::Bin/../lib";
 use ParsCit::Controller;
-use XML::Bare;
 
 my $textFile = $ARGV[0];
 
