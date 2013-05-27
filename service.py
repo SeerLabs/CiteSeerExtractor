@@ -4,7 +4,7 @@ import os
 import subprocess
 
 urls = ('/metadataparser', 'MetadataParser')
-ROOT_FOLDER="../seersuite-extract/CiteSeerExtractor/"# there must be a trailing /
+ROOT_FOLDER="./"# there must be a trailing /
 
 
 class Extraction:
@@ -67,8 +67,8 @@ class MetadataParser:
 		txtpath = utilities.pdf2text(pdfpath)
 		try:
 			extractor = Extraction()
-			headers = extractor.extractHeaders(pdfpath)
-			citations = extractor.extractCitations(pdfpath)
+			headers = extractor.extractHeaders(txtpath)
+			citations = extractor.extractCitations(txtpath)
 			merged = headers + citations
 			response = """<?xml version="1.0" encoding="UTF-8"?>"""
 			response = response + "<CSXAPIMetadata>"
