@@ -1,0 +1,47 @@
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/citeseerx/!svn/ver/317/trunk/perl/parscit/lib/ParsCit
+END
+PostProcess.pm
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svn/citeseerx/!svn/ver/310/trunk/perl/parscit/lib/ParsCit/PostProcess.pm
+END
+PreProcess.pm
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/citeseerx/!svn/ver/259/trunk/perl/parscit/lib/ParsCit/PreProcess.pm
+END
+Config.pm
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/citeseerx/!svn/ver/317/trunk/perl/parscit/lib/ParsCit/Config.pm
+END
+Citation.pm
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svn/citeseerx/!svn/ver/208/trunk/perl/parscit/lib/ParsCit/Citation.pm
+END
+CitationContext.pm
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svn/citeseerx/!svn/ver/317/trunk/perl/parscit/lib/ParsCit/CitationContext.pm
+END
+Tr2crfpp.pm
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svn/citeseerx/!svn/ver/262/trunk/perl/parscit/lib/ParsCit/Tr2crfpp.pm
+END
+Controller.pm
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/citeseerx/!svn/ver/278/trunk/perl/parscit/lib/ParsCit/Controller.pm
+END

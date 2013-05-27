@@ -1,0 +1,34 @@
+8
+
+dir
+320
+http://cs1.ist.psu.edu/svn/citeseerx/trunk/perl/HeaderParseService/lib/HeaderParse
+http://cs1.ist.psu.edu/svn/citeseerx
+
+
+
+2008-01-24T15:58:14.834685Z
+309
+isaac
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+2e6883a6-860a-0410-b84e-d925cc178b44
+
+Config
+dir
+
+API
+dir
+

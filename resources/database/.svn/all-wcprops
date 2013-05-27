@@ -1,0 +1,389 @@
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/citeseerx/!svn/ver/192/trunk/perl/HeaderParseService/resources/database
+END
+dateTopWords
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/citeseerx/!svn/ver/192/trunk/perl/HeaderParseService/resources/database/dateTopWords
+END
+firstnames.bin
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/citeseerx/!svn/ver/192/trunk/perl/HeaderParseService/resources/database/firstnames.bin
+END
+affi.txt
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/citeseerx/!svn/ver/192/trunk/perl/HeaderParseService/resources/database/affi.txt
+END
+note.txt
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/citeseerx/!svn/ver/192/trunk/perl/HeaderParseService/resources/database/note.txt
+END
+AffiTopWords.txt
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/citeseerx/!svn/ver/192/trunk/perl/HeaderParseService/resources/database/AffiTopWords.txt
+END
+mul.label.old
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/citeseerx/!svn/ver/192/trunk/perl/HeaderParseService/resources/database/mul.label.old
+END
+page.txt
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/citeseerx/!svn/ver/192/trunk/perl/HeaderParseService/resources/database/page.txt
+END
+TrainMulClassLines1
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svn/citeseerx/!svn/ver/192/trunk/perl/HeaderParseService/resources/database/TrainMulClassLines1
+END
+allnamewords.bin
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/citeseerx/!svn/ver/192/trunk/perl/HeaderParseService/resources/database/allnamewords.bin
+END
+nickname.txt
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/citeseerx/!svn/ver/192/trunk/perl/HeaderParseService/resources/database/nickname.txt
+END
+month.txt
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/citeseerx/!svn/ver/192/trunk/perl/HeaderParseService/resources/database/month.txt
+END
+surnames.bin
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/citeseerx/!svn/ver/192/trunk/perl/HeaderParseService/resources/database/surnames.bin
+END
+abstractTopWords
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/citeseerx/!svn/ver/192/trunk/perl/HeaderParseService/resources/database/abstractTopWords
+END
+email.txt
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/citeseerx/!svn/ver/192/trunk/perl/HeaderParseService/resources/database/email.txt
+END
+country_abbr.txt
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/citeseerx/!svn/ver/192/trunk/perl/HeaderParseService/resources/database/country_abbr.txt
+END
+stopwords.bin
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/citeseerx/!svn/ver/192/trunk/perl/HeaderParseService/resources/database/stopwords.bin
+END
+states_and_abbreviations.txt
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svn/citeseerx/!svn/ver/192/trunk/perl/HeaderParseService/resources/database/states_and_abbreviations.txt
+END
+mul.label
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/citeseerx/!svn/ver/192/trunk/perl/HeaderParseService/resources/database/mul.label
+END
+surnames_spec.bin
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/citeseerx/!svn/ver/192/trunk/perl/HeaderParseService/resources/database/surnames_spec.bin
+END
+male-names
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/citeseerx/!svn/ver/192/trunk/perl/HeaderParseService/resources/database/male-names
+END
+mulAuthor
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/citeseerx/!svn/ver/192/trunk/perl/HeaderParseService/resources/database/mulAuthor
+END
+url.txt
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svn/citeseerx/!svn/ver/192/trunk/perl/HeaderParseService/resources/database/url.txt
+END
+keywordTopWords
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/citeseerx/!svn/ver/192/trunk/perl/HeaderParseService/resources/database/keywordTopWords
+END
+excludeWords.txt
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/citeseerx/!svn/ver/192/trunk/perl/HeaderParseService/resources/database/excludeWords.txt
+END
+cityname.txt
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/citeseerx/!svn/ver/192/trunk/perl/HeaderParseService/resources/database/cityname.txt
+END
+university_list.txt
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svn/citeseerx/!svn/ver/192/trunk/perl/HeaderParseService/resources/database/university_list.txt
+END
+mul
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/citeseerx/!svn/ver/192/trunk/perl/HeaderParseService/resources/database/mul
+END
+postcode.txt
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/citeseerx/!svn/ver/192/trunk/perl/HeaderParseService/resources/database/postcode.txt
+END
+affis.bin
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/citeseerx/!svn/ver/192/trunk/perl/HeaderParseService/resources/database/affis.bin
+END
+50states
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/citeseerx/!svn/ver/192/trunk/perl/HeaderParseService/resources/database/50states
+END
+all_namewords_spec.bin
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svn/citeseerx/!svn/ver/192/trunk/perl/HeaderParseService/resources/database/all_namewords_spec.bin
+END
+ChineseSurNames.txt
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svn/citeseerx/!svn/ver/192/trunk/perl/HeaderParseService/resources/database/ChineseSurNames.txt
+END
+TrainMulClassLines
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/citeseerx/!svn/ver/192/trunk/perl/HeaderParseService/resources/database/TrainMulClassLines
+END
+nicknames.bin
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/citeseerx/!svn/ver/192/trunk/perl/HeaderParseService/resources/database/nicknames.bin
+END
+webTopWords
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/citeseerx/!svn/ver/192/trunk/perl/HeaderParseService/resources/database/webTopWords
+END
+Csurnames_spec.bin
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/citeseerx/!svn/ver/192/trunk/perl/HeaderParseService/resources/database/Csurnames_spec.bin
+END
+abstract.txt
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/citeseerx/!svn/ver/192/trunk/perl/HeaderParseService/resources/database/abstract.txt
+END
+countryname.txt
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/citeseerx/!svn/ver/192/trunk/perl/HeaderParseService/resources/database/countryname.txt
+END
+mul.processed
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/citeseerx/!svn/ver/192/trunk/perl/HeaderParseService/resources/database/mul.processed
+END
+pubnum.txt
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/citeseerx/!svn/ver/192/trunk/perl/HeaderParseService/resources/database/pubnum.txt
+END
+addr.txt
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/citeseerx/!svn/ver/192/trunk/perl/HeaderParseService/resources/database/addr.txt
+END
+AddrTopWords.txt
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/citeseerx/!svn/ver/192/trunk/perl/HeaderParseService/resources/database/AddrTopWords.txt
+END
+firstnames_spec.bin
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svn/citeseerx/!svn/ver/192/trunk/perl/HeaderParseService/resources/database/firstnames_spec.bin
+END
+words
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/citeseerx/!svn/ver/192/trunk/perl/HeaderParseService/resources/database/words
+END
+LabeledHeader
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/citeseerx/!svn/ver/192/trunk/perl/HeaderParseService/resources/database/LabeledHeader
+END
+keyword.txt
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/citeseerx/!svn/ver/192/trunk/perl/HeaderParseService/resources/database/keyword.txt
+END
+DomainSuffixes.txt
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/citeseerx/!svn/ver/192/trunk/perl/HeaderParseService/resources/database/DomainSuffixes.txt
+END
+stopwords
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/citeseerx/!svn/ver/192/trunk/perl/HeaderParseService/resources/database/stopwords
+END
+cities_US.txt
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/citeseerx/!svn/ver/192/trunk/perl/HeaderParseService/resources/database/cities_US.txt
+END
+cities_world.txt
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/citeseerx/!svn/ver/192/trunk/perl/HeaderParseService/resources/database/cities_world.txt
+END
+Csurnames.bin
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/citeseerx/!svn/ver/192/trunk/perl/HeaderParseService/resources/database/Csurnames.bin
+END
+AffiTopWordsAll.txt
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svn/citeseerx/!svn/ver/192/trunk/perl/HeaderParseService/resources/database/AffiTopWordsAll.txt
+END
+mulClassStat
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/citeseerx/!svn/ver/192/trunk/perl/HeaderParseService/resources/database/mulClassStat
+END
+city.txt
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/citeseerx/!svn/ver/192/trunk/perl/HeaderParseService/resources/database/city.txt
+END
+phone.txt
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/citeseerx/!svn/ver/192/trunk/perl/HeaderParseService/resources/database/phone.txt
+END
+statename.bin
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/citeseerx/!svn/ver/192/trunk/perl/HeaderParseService/resources/database/statename.bin
+END
+firstNames.txt
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/citeseerx/!svn/ver/192/trunk/perl/HeaderParseService/resources/database/firstNames.txt
+END
+female-names
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/citeseerx/!svn/ver/192/trunk/perl/HeaderParseService/resources/database/female-names
+END
+README
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svn/citeseerx/!svn/ver/192/trunk/perl/HeaderParseService/resources/database/README
+END
+statename.txt
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/citeseerx/!svn/ver/192/trunk/perl/HeaderParseService/resources/database/statename.txt
+END
+middleNames.txt
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/citeseerx/!svn/ver/192/trunk/perl/HeaderParseService/resources/database/middleNames.txt
+END
+degree.txt
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/citeseerx/!svn/ver/192/trunk/perl/HeaderParseService/resources/database/degree.txt
+END
+intro.txt
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/citeseerx/!svn/ver/192/trunk/perl/HeaderParseService/resources/database/intro.txt
+END
+surNames.txt
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/citeseerx/!svn/ver/192/trunk/perl/HeaderParseService/resources/database/surNames.txt
+END

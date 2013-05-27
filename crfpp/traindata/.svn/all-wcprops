@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/citeseerx/!svn/ver/189/trunk/perl/parscit/crfpp/traindata
+END
+parsCit.template
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svn/citeseerx/!svn/ver/189/trunk/perl/parscit/crfpp/traindata/parsCit.template
+END
+parsCit.train.data
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/citeseerx/!svn/ver/189/trunk/perl/parscit/crfpp/traindata/parsCit.train.data
+END
+tagged_references.txt
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svn/citeseerx/!svn/ver/189/trunk/perl/parscit/crfpp/traindata/tagged_references.txt
+END

@@ -1,0 +1,48 @@
+package FileConverter::Config;
+
+use FindBin;
+
+## Conversion utilities
+
+# valid options are TET or PDFBOX
+$PDFTOTEXT = "TET";
+
+<<<<<<< .mine
+$TETPath = "$FindBin::Bin/../converters/TET-2.2-Linux/bin/tet";
+=======
+# valid options are TEXT or PDF
+$PSConversion = "TEXT";
+
+$TETPath = "$FindBin::Bin/../converters/TET-2.2-Linux-x86_64/bin/tet";
+>>>>>>> .r254
+$TETLicensePath =
+    "$FindBin::Bin/../converters/TET-2.2-Linux/licensekeys.txt";
+
+$PDFBoxLocation = "$FindBin::Bin/../converters/PDFBox/PDFBox-0.7.3.jar";
+
+$JODConverterPath = 
+    "$FindBin::Bin/../converters/jodconverter-2.2.0/jodconverter-cli-2.2.0.jar";
+
+$PrescriptPath = "$FindBin::Bin/../converters/prescript-2.2/prescript";
+
+## Compression utilities
+
+$gunzip = "/usr/bin/gunzip";
+$uncompress = "/usr/bin/uncompress";
+$unzip = "/usr/bin/unzip";
+
+
+## Repository Mappings
+
+%repositories = ('example1' => '/',
+        		 'example2' => '/home',
+                );
+
+
+## WS settings
+
+$serverURL = '127.0.0.1';
+$serverPort = 10888;
+$URI = 'http://citeseerx.org/fileConversion/wsdl';
+
+1;

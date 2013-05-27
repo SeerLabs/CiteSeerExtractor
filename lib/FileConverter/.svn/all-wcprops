@@ -1,0 +1,71 @@
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/citeseerx/!svn/ver/323/trunk/perl/FileConversionService/lib/FileConverter
+END
+JODConverter.pm
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/citeseerx/!svn/ver/252/trunk/perl/FileConversionService/lib/FileConverter/JODConverter.pm
+END
+Config.pm
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/citeseerx/!svn/ver/321/trunk/perl/FileConversionService/lib/FileConverter/Config.pm
+END
+PSConverter.pm
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/citeseerx/!svn/ver/322/trunk/perl/FileConversionService/lib/FileConverter/PSConverter.pm
+END
+PSToText.pm
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/citeseerx/!svn/ver/323/trunk/perl/FileConversionService/lib/FileConverter/PSToText.pm
+END
+Prescript.pm
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/citeseerx/!svn/ver/254/trunk/perl/FileConversionService/lib/FileConverter/Prescript.pm
+END
+TET.pm
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/citeseerx/!svn/ver/252/trunk/perl/FileConversionService/lib/FileConverter/TET.pm
+END
+Utils.pm
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/citeseerx/!svn/ver/260/trunk/perl/FileConversionService/lib/FileConverter/Utils.pm
+END
+Compression.pm
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/citeseerx/!svn/ver/218/trunk/perl/FileConversionService/lib/FileConverter/Compression.pm
+END
+PDFBox.pm
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/citeseerx/!svn/ver/252/trunk/perl/FileConversionService/lib/FileConverter/PDFBox.pm
+END
+CheckSum.pm
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/citeseerx/!svn/ver/252/trunk/perl/FileConversionService/lib/FileConverter/CheckSum.pm
+END
+Controller.pm
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/citeseerx/!svn/ver/321/trunk/perl/FileConversionService/lib/FileConverter/Controller.pm
+END

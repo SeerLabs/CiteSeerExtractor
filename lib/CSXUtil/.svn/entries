@@ -1,0 +1,40 @@
+8
+
+dir
+252
+http://cs1.ist.psu.edu/svn/citeseerx/trunk/perl/CSXUtil
+http://cs1.ist.psu.edu/svn/citeseerx
+
+
+
+2007-09-04T17:29:17.640594Z
+209
+isaac
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+2e6883a6-860a-0410-b84e-d925cc178b44
+
+SafeText.pm
+file
+
+
+
+
+2007-10-31T16:16:02.000000Z
+5150479592fb9553da16b141db08027a
+2007-09-04T17:29:17.640594Z
+209
+isaac
+

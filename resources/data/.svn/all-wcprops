@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/citeseerx/!svn/ver/192/trunk/perl/HeaderParseService/resources/data
+END
+EbizHeaders.txt.parsed
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/citeseerx/!svn/ver/192/trunk/perl/HeaderParseService/resources/data/EbizHeaders.txt.parsed
+END
+test_header.txt.parsed
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/citeseerx/!svn/ver/192/trunk/perl/HeaderParseService/resources/data/test_header.txt.parsed
+END
+EbizHeaders.txt
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/citeseerx/!svn/ver/192/trunk/perl/HeaderParseService/resources/data/EbizHeaders.txt
+END
+tagged_headers.txt
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/citeseerx/!svn/ver/192/trunk/perl/HeaderParseService/resources/data/tagged_headers.txt
+END
+test_header.txt
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/citeseerx/!svn/ver/192/trunk/perl/HeaderParseService/resources/data/test_header.txt
+END
+EbizHeaders.txt.parsed.old
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svn/citeseerx/!svn/ver/192/trunk/perl/HeaderParseService/resources/data/EbizHeaders.txt.parsed.old
+END
