@@ -21,12 +21,11 @@ use CSXUtil::SafeText qw(cleanXML);
 
 ##
 # Main API method for generating an XML document including all
-# citation data.  Returns a reference XML document and a
-# reference to the article body text.
+# citation data.  Returns a reference XML document
 ##
 sub extractCitations {
     my ($textFile) = @_;
-    my ($status, $msg, $rCitations, $rBodyText)
+    my ($status, $msg, $rCitations)
 	= extractCitationsImpl($textFile);
     if ($status > 0) {
 	return buildXMLResponse($rCitations);
@@ -37,6 +36,23 @@ sub extractCitations {
 
 } # extractCitations
 
+##
+# Main API method for extracting the body of the document.
+# Returns an XML document.
+##
+sub extractBody {
+
+    my ($textFile) = @_;
+    my ($status, $msg, $rBodyText) = extractBodyImpl($textFile);
+    if ($status > 0) {
+        cleanXML($rBodyText);
+        return "<text>\n" . $$rBodyText . "</text>\n";
+    } else {
+         my $error = "Error: $msg";
+         return \$error;
+    }
+
+} # extractBody
 
 sub extractCitationsAlreadySegmented {
     my ($textFile) = @_;
@@ -132,8 +148,7 @@ sub extractCitationsAlreadySegmented {
 # Main script for actually walking through the steps of
 # citation processing.  Returns a status code (0 for failure),
 # an error message (may be blank if no error), a reference to
-# an array of citation objects and a reference to the body
-# text of the article being processed.
+# an array of citation objects
 ##
 sub extractCitationsImpl {
     my ($textFile, $bWriteSplit) = @_;
@@ -158,10 +173,10 @@ sub extractCitationsImpl {
     my ($rCiteText, $rNormBodyText, $rBodyText) =
 	ParsCit::PreProcess::findCitationText(\$text);
     my ($citeFile, $bodyFile) = ("", "");
-#     if ($bWriteSplit > 0) {
-# 	($citeFile, $bodyFile) =
-# 	    writeSplit($textFile, $rCiteText, $rBodyText);
-#     }
+#      if ($bWriteSplit > 0) {
+#  	($citeFile, $bodyFile) =
+#  	    writeSplit($textFile, $rCiteText, $rBodyText);
+#      }
 
     my $rRawCitations = ParsCit::PreProcess::segmentCitations($rCiteText);
     my @citations = ();
@@ -230,6 +245,33 @@ sub extractCitationsImpl {
 
 } # extractCitationsImpl
 
+# Main implementation for extracting the body from text.
+# Implementation from first part of extractCitationsImpl
+sub extractBodyImpl {
+    my ($textFile, $bWriteSplit) = @_;
+
+    if (!defined $bWriteSplit) {
+        $bWriteSplit = $ParsCit::Config::bWriteSplit;
+    }
+
+    my ($status, $msg) = (1, "");
+
+    if (!open (IN, "<:utf8", "$textFile")) {
+        return (-1, "Could not open text file $textFile: $!");
+    }
+
+    my $text;
+    {
+        local $/ = undef;
+        $text = <IN>;
+    }
+    close IN;
+
+    my ($rCiteText, $rNormBodyText, $rBodyText) = ParsCit::PreProcess::findCitationText(\$text);
+        
+    return ($status, $msg, $rBodyText);
+     
+}
 
 sub buildXMLResponse {
     my ($rCitations) = @_;

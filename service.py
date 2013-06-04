@@ -24,6 +24,14 @@ class Extraction:
 			return citations
 		except Exception as ex:
 			web.debug(ex)
+	def extractBody(self,path):
+                """extract body from text file"""
+                try:
+                        body = subprocess.check_output([ROOT_FOLDER+"bin/getBody.pl",path])
+                        web.debug(body)
+                        return body
+                except Exception as ex:
+                        web.debug(ex)
 			
 class Util:
 	def handleUpload(self, inObject):
@@ -69,7 +77,8 @@ class MetadataParser:
 			extractor = Extraction()
 			headers = extractor.extractHeaders(txtpath)
 			citations = extractor.extractCitations(txtpath)
-			merged = headers + citations
+			text = extractor.extractBody(txtpath)
+			merged = headers + citations + text
 			response = """<?xml version="1.0" encoding="UTF-8"?>"""
 			response = response + "<CSXAPIMetadata>"
 			response = response + merged
