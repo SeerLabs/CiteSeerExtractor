@@ -20,6 +20,7 @@ The code is runnable as a stand-alone Web server.
 On 64-bit systems you'll need support for 32-bit applications. Please install the appropriate package for your distribution.
 
 Ubuntu: `sudo apt-get install ia32-libs-multiarch`
+
 RHEL/CentOS: `sudo yum install glibc.i686 libstdc++.i686`
 
 ### Run
