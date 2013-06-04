@@ -16,7 +16,14 @@ The code is runnable as a stand-alone Web server.
 2. Install web.py `easy_install web.py`
 3. Install String::Approx  `cpan String::Approx`
 
+#### 64-bit Architectures
+On 64-bit systems you'll need support for 32-bit applications. Please install the appropriate package for your distribution.
+
+Ubuntu: `sudo apt-get install ia32-libs-multiarch`
+
+RHEL/CentOS: `sudo yum install glibc.i686 libstdc++.i686`
+
 ### Run
-`python service.py [port]` and navigate to http://localhost:port
+`python service.py [port]` and navigate to http://localhost:port/metadataparser
 
 Upload a PDF and let us know if you have any problems!
