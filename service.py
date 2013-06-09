@@ -8,8 +8,7 @@ urls = (
 '/extractor/upload', 'Upload',
 '/extractor/pdf', 'PDFHandler',
 '/extractor/pdf/(.+)', 'PDFHandler',
-'/extractor/header/(.+)', 'Extractor',
-'/extractor/citations/(.+)', 'Extractor',
+'/extractor/(header|citations)/(.+)', 'Extractor',
 
 )
 
@@ -73,13 +72,14 @@ class Extractor:
 	
 	def GET(self, method, datafile):
 		extractor = Extraction()
+		utilities = Util()
 		data = ''
 		txtfile = '/tmp/' + datafile + '.txt'
 		if method == 'header':
 			data = data + extractor.extractHeaders(txtfile)
 		elif method == 'citations':
 			data = data + extractor.extractCitations(txtfile)
-		return data
+		return utilities.printXML(data)
 
 class Upload:
 	
