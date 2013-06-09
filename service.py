@@ -60,6 +60,13 @@ class Util:
 			return path+".txt"
 		except Exception as ex:
 			web.debug(ex)
+			
+	def printXML(self, xml):
+		response = """<?xml version="1.0" encoding="UTF-8"?>\n"""
+		response = response + "<CSXAPIMetadata>\n"
+		response = response + xml
+		response = response + "</CSXAPIMetadata>\n"
+		return response
 
 
 class Extractor:
@@ -92,10 +99,15 @@ class Upload:
 		try:
 			pdfpath = utilities.handleUpload(pdffile)
 			txtpath = utilities.pdf2text(pdfpath)
-			location = web.ctx.homedomain + '/extractor/pdf/' + os.path.basename(pdfpath)
+			basefile = os.path.basename(pdfpath)
+			location = web.ctx.homedomain + '/extractor/pdf/' + basefile
 			web.ctx.status = '201 CREATED'
 			web.header('Location', location)
-			return location
+			xml = '<pdf>' + web.ctx.homedomain + '/extractor/pdf/' + basefile + '</pdf>\n'
+			xml = xml + '<header>' + web.ctx.homedomain + '/extractor/header/' + basefile + '</header>\n'
+			xml = xml + '<citations>' + web.ctx.homedomain + '/extractor/citations/' + basefile + '</citations>\n'
+			response = utilities.printXML(xml)
+			return response
 		except Exception as ex:
 			web.debug(ex)
 			
