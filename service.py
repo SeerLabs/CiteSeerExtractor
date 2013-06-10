@@ -12,11 +12,9 @@ urls = (
 
 )
 
-#,
-#'/extractor/pdf/(.*)/(.*)', 'Extractor'
-ROOT_FOLDER="./"# there must be a trailing /
+ROOT_FOLDER="./" # there must be a trailing /
 
-
+# This class does the actual extraction by calling the relevant perl methods
 class Extraction:
 	def extractHeaders(self,path):
 		"""extract headers from text file"""
@@ -61,16 +59,25 @@ class Util:
 			web.debug(ex)
 			
 	def printXML(self, xml):
+		"""Returns XMl with the proper headers"""
 		response = """<?xml version="1.0" encoding="UTF-8"?>\n"""
 		response = response + "<CSXAPIMetadata>\n"
 		response = response + xml
 		response = response + "</CSXAPIMetadata>\n"
 		return response
+	
+	def printXMLLocations(self, fileid):
+		"""Returns the URIs for different types of metadata"""
+		response = '<pdf>' + web.ctx.homedomain + '/extractor/' + fileid + '/pdf</pdf>\n'
+		response = response + '<header>' + web.ctx.homedomain + '/extractor/' + fileid + '/header</header>\n'
+		response = response + '<citations>' + web.ctx.homedomain + '/extractor/' + fileid + '/citations</citations>\n'
+		return self.printXML(response)
 
 
 class Extractor:
 	
 	def GET(self, datafile, method):
+		"""Returns some extracted information from a file"""
 		extractor = Extraction()
 		utilities = Util()
 		data = ''
@@ -79,11 +86,13 @@ class Extractor:
 			data = data + extractor.extractHeaders(txtfile)
 		elif method == 'citations':
 			data = data + extractor.extractCitations(txtfile)
+		web.header('Content-Type','text/xml; charset=utf-8') 	
 		return utilities.printXML(data)
 
 class Upload:
 	
 	def GET(self):
+		"""A form for submitting a pdf"""
 		return """<html><head></head><body>
 		<form method="POST" enctype="multipart/form-data" action="">
 		<input type="file" name="myfile" />
@@ -93,20 +102,18 @@ class Upload:
 		</body></html>"""
 		
 	def POST(self):
+		"""Actually submits the file"""
 		pdffile = web.input(myfile={})
 		utilities = Util()
-		
 		try:
 			pdfpath = utilities.handleUpload(pdffile)
 			txtpath = utilities.pdf2text(pdfpath)
-			basefile = os.path.basename(pdfpath)
-			location = web.ctx.homedomain + '/extractor/pdf/' + basefile
+			fileid = os.path.basename(pdfpath)
+			location = web.ctx.homedomain + '/extractor/pdf/' + fileid
 			web.ctx.status = '201 CREATED'
 			web.header('Location', location)
-			xml = '<pdf>' + web.ctx.homedomain + '/extractor/pdf/' + basefile + '</pdf>\n'
-			xml = xml + '<header>' + web.ctx.homedomain + '/extractor/header/' + basefile + '</header>\n'
-			xml = xml + '<citations>' + web.ctx.homedomain + '/extractor/citations/' + basefile + '</citations>\n'
-			response = utilities.printXML(xml)
+			web.header('Content-Type','text/xml; charset=utf-8') 
+			response = utilities.printXMLLocations(fileid)
 			return response
 		except Exception as ex:
 			web.debug(ex)
@@ -130,10 +137,13 @@ class PDFHandler:
 			f.close()
 			web.debug(path)
 			txtpath = utilities.pdf2text(path)
-			location = web.ctx.homedomain + web.ctx.fullpath + "/" + os.path.basename(path)
+			fileid = os.path.basename(path)
+			location = web.ctx.homedomain + '/extractor/' + fileid + '/pdf'
 			web.ctx.status = '201 CREATED'
 			web.header('Location', location)
-			return location
+			web.header('Content-Type','text/xml; charset=utf-8') 
+			response = utilities.printXMLLocations(fileid)
+			return response
 		except Exception as ex:
 			web.debug(ex)
 
