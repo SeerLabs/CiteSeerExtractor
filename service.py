@@ -81,7 +81,7 @@ class Util:
 		response = response + '<header>' + web.ctx.homedomain + '/extractor/' + fileid + '/header</header>\n'
 		response = response + '<citations>' + web.ctx.homedomain + '/extractor/' + fileid + '/citations</citations>\n'
 		response = response + '<body>' + web.ctx.homedomain + '/extractor/' + fileid + '/body</body>\n'
-		response = response + '<text>' + web.ctx.homedomain + '/extractor/' + fileid + '/text</body>\n'
+		response = response + '<text>' + web.ctx.homedomain + '/extractor/' + fileid + '/text</text>\n'
 		return self.printXML(response)
 
 class Index:
