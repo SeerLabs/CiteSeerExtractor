@@ -9,7 +9,7 @@ urls = (
 '/extractor', 'Upload',
 '/extractor/pdf', 'PDFHandler',
 '/extractor/(.+)/pdf', 'PDFHandler',
-'/extractor/(.+)/(header|citations|body)', 'Extractor',
+'/extractor/(.+)/(header|citations|body|text)', 'Extractor',
 
 )
 
@@ -81,6 +81,7 @@ class Util:
 		response = response + '<header>' + web.ctx.homedomain + '/extractor/' + fileid + '/header</header>\n'
 		response = response + '<citations>' + web.ctx.homedomain + '/extractor/' + fileid + '/citations</citations>\n'
 		response = response + '<body>' + web.ctx.homedomain + '/extractor/' + fileid + '/body</body>\n'
+		response = response + '<text>' + web.ctx.homedomain + '/extractor/' + fileid + '/text</body>\n'
 		return self.printXML(response)
 
 class Index:
@@ -108,14 +109,19 @@ class Extractor:
 		utilities = Util()
 		data = ''
 		txtfile = '/tmp/' + datafile + '.txt'
-		if method == 'header':
-			data = data + extractor.extractHeaders(txtfile)
-		elif method == 'citations':
-			data = data + extractor.extractCitations(txtfile)
-		elif method == 'body':
-			data = data + extractor.extractBody(txtfile)
-		web.header('Content-Type','text/xml; charset=utf-8') 	
-		return utilities.printXML(data)
+		if method == 'text':
+			txtfile = '/tmp/' + datafile + '.txt'
+			web.header('Content-Type', 'text/text') # Set the Header
+			return open(txtfile,"rb").read()
+		else:
+			if method == 'header':
+				data = data + extractor.extractHeaders(txtfile)
+			elif method == 'citations':
+				data = data + extractor.extractCitations(txtfile)
+			elif method == 'body':
+				data = data + extractor.extractBody(txtfile)
+			web.header('Content-Type','text/xml; charset=utf-8') 	
+			return utilities.printXML(data)
 
 class Upload:
 	
