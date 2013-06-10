@@ -6,10 +6,11 @@ import subprocess
 urls = (
 
 '/', 'Index',
-'/extractor', 'Upload',
-'/extractor/pdf', 'PDFHandler',
-'/extractor/(.+)/pdf', 'PDFHandler',
-'/extractor/(.+)/(header|citations|body|text)', 'Extractor',
+'/extractor', 'FileHandler', # For uploading a file
+'/extractor/(.+)', 'FileHandler', # For deleting a file
+'/extractor/pdf', 'PDFHandler', # For uploading a PDF data stream
+'/extractor/(.+)/pdf', 'PDFHandler', # For retrieving a PDF
+'/extractor/(.+)/(header|citations|body|text)', 'Extractor', # For retrieving file information
 
 )
 
@@ -123,7 +124,7 @@ class Extractor:
 			web.header('Content-Type','text/xml; charset=utf-8') 	
 			return utilities.printXML(data)
 
-class Upload:
+class FileHandler:
 	
 	def GET(self):
 		"""A form for submitting a pdf"""
@@ -152,6 +153,11 @@ class Upload:
 		except Exception as ex:
 			web.debug(ex)
 			
+	def DELETE(self,fileid):
+		os.unlink('/tmp/' + fileid)
+		os.unlink('/tmp/' + fileid + '.txt')
+		return 'DELETED' + fileid
+		
 class PDFHandler:
 
 #Get the PDF
