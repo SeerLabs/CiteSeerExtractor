@@ -2,6 +2,8 @@ import web
 import tempfile
 import os
 import subprocess
+import xmltodict
+import json
 
 urls = (
 
@@ -104,6 +106,8 @@ class Index:
 class Extractor:
 	
 	def GET(self, datafile, method):
+		
+		params = web.input(output="xml")
 		"""Returns some extracted information from a file"""
 		extractor = Extraction()
 		utilities = Util()
@@ -124,8 +128,17 @@ class Extractor:
 				data = data + extractor.extractCitations(txtfile)
 			elif method == 'body':
 				data = data + extractor.extractBody(txtfile)
-			web.header('Content-Type','text/xml; charset=utf-8') 	
-			return utilities.printXML(data)
+			#Print XML or JSON
+			if params.output == 'xml' or params.output == '':
+				web.header('Content-Type','text/xml; charset=utf-8')
+				return utilities.printXML(data)
+			elif params.output == 'json':
+				jsondata = xmltodict.parse(data)
+				web.header('Content-Type','text/json; charset=utf-8') 	
+				return json.dumps(jsondata)
+			else:
+				return 'Unsupported output format. Options are: "xml" (default) and "json"'
+			
 
 class FileHandler:
 	
