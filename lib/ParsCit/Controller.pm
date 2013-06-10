@@ -46,7 +46,7 @@ sub extractBody {
     my ($status, $msg, $rBodyText) = extractBodyImpl($textFile);
     if ($status > 0) {
         cleanXML($rBodyText);
-        return "<text>\n" . $$rBodyText . "</text>\n";
+        return "<body>\n" . $$rBodyText . "</body>\n";
     } else {
          my $error = "Error: $msg";
          return \$error;

@@ -9,7 +9,7 @@ urls = (
 '/extractor', 'Upload',
 '/extractor/pdf', 'PDFHandler',
 '/extractor/(.+)/pdf', 'PDFHandler',
-'/extractor/(.+)/(header|citations)', 'Extractor',
+'/extractor/(.+)/(header|citations|body)', 'Extractor',
 
 )
 
@@ -34,13 +34,13 @@ class Extraction:
 		except Exception as ex:
 			web.debug(ex)
 	def extractBody(self,path):
-                """extract body from text file"""
-                try:
-                        body = subprocess.check_output([ROOT_FOLDER+"bin/getBody.pl",path])
-                        web.debug(body)
-                        return body
-                except Exception as ex:
-                        web.debug(ex)
+		"""extract body from text file"""
+		try:
+			body = subprocess.check_output([ROOT_FOLDER+"bin/getBody.pl",path])
+			web.debug(body)
+			return body
+		except Exception as ex:
+			web.debug(ex)
 			
 class Util:
 	def handleUpload(self, inObject):
@@ -80,6 +80,7 @@ class Util:
 		response = '<pdf>' + web.ctx.homedomain + '/extractor/' + fileid + '/pdf</pdf>\n'
 		response = response + '<header>' + web.ctx.homedomain + '/extractor/' + fileid + '/header</header>\n'
 		response = response + '<citations>' + web.ctx.homedomain + '/extractor/' + fileid + '/citations</citations>\n'
+		response = response + '<body>' + web.ctx.homedomain + '/extractor/' + fileid + '/body</body>\n'
 		return self.printXML(response)
 
 class Index:
@@ -111,6 +112,8 @@ class Extractor:
 			data = data + extractor.extractHeaders(txtfile)
 		elif method == 'citations':
 			data = data + extractor.extractCitations(txtfile)
+		elif method == 'body':
+			data = data + extractor.extractBody(txtfile)
 		web.header('Content-Type','text/xml; charset=utf-8') 	
 		return utilities.printXML(data)
 
