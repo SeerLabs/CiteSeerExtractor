@@ -7,8 +7,8 @@ urls = (
 
 '/extractor/upload', 'Upload',
 '/extractor/pdf', 'PDFHandler',
-'/extractor/pdf/(.+)', 'PDFHandler',
-'/extractor/(header|citations)/(.+)', 'Extractor',
+'/extractor/(.+)/pdf', 'PDFHandler',
+'/extractor/(.+)/(header|citations)', 'Extractor',
 
 )
 
@@ -70,7 +70,7 @@ class Util:
 
 class Extractor:
 	
-	def GET(self, method, datafile):
+	def GET(self, datafile, method):
 		extractor = Extraction()
 		utilities = Util()
 		data = ''
