@@ -24,5 +24,5 @@ Ubuntu: `sudo apt-get install ia32-libs-multiarch`
 RHEL/CentOS: `sudo yum install glibc.i686 libstdc++.i686`
 
 ### Run
-`python service.py [port]` and navigate to http://localhost:port/extractor and follow the instructions for different types of extraction
+`python service.py [port]` and navigate to http://localhost:port and follow the instructions for different types of extraction
 
