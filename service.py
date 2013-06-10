@@ -7,10 +7,9 @@ urls = (
 
 '/', 'Index',
 '/extractor', 'FileHandler', # For uploading a file
+'/extractor/pdf', 'PDFStreamHandler', # For uploading a PDF data stream
+'/extractor/(.+)/(header|citations|body|text|pdf)', 'Extractor', # For retrieving file information
 '/extractor/(.+)', 'FileHandler', # For deleting a file
-'/extractor/pdf', 'PDFHandler', # For uploading a PDF data stream
-'/extractor/(.+)/pdf', 'PDFHandler', # For retrieving a PDF
-'/extractor/(.+)/(header|citations|body|text)', 'Extractor', # For retrieving file information
 
 )
 
@@ -114,6 +113,10 @@ class Extractor:
 			txtfile = '/tmp/' + datafile + '.txt'
 			web.header('Content-Type', 'text/text') # Set the Header
 			return open(txtfile,"rb").read()
+		elif method == 'pdf':
+			pdffile = '/tmp/' + datafile
+			web.header('Content-Type', 'application/pdf') # Set the Header
+			return open(pdffile,"rb").read()
 		else:
 			if method == 'header':
 				data = data + extractor.extractHeaders(txtfile)
@@ -154,18 +157,14 @@ class FileHandler:
 			web.debug(ex)
 			
 	def DELETE(self,fileid):
+		
 		os.unlink('/tmp/' + fileid)
 		os.unlink('/tmp/' + fileid + '.txt')
-		return 'DELETED' + fileid
+		return 'DELETED ' + fileid
 		
-class PDFHandler:
+		
+class PDFStreamHandler:
 
-#Get the PDF
-	def GET(self, pdf):
-		pdffile = '/tmp/' + pdf
-		web.header('Content-Type', 'application/pdf') # Set the Header
-		return open(pdffile,"rb").read()
-		
 # Post the raw pdf data
 	def POST(self):
 		utilities = Util()
