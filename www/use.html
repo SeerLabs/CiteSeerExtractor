@@ -1,0 +1,156 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+
+<title>CiteSeerExtractor</title>
+
+<meta http-equiv="content-type" content="application/xhtml+xml; charset=UTF-8" />
+<meta name="author" content="Erwin Aligam - styleshout.com" />
+<meta name="description" content="Site Description Here" />
+<meta name="keywords" content="keywords, here" />
+<meta name="robots" content="index, follow, noarchive" />
+<meta name="googlebot" content="noarchive" />
+
+<link rel="stylesheet" type="text/css" media="screen" href="css/screen.css" />
+
+</head>
+<body>
+
+	<!-- header starts-->
+	<div id="header-wrap">
+	<div id="header" class="container_16">						
+		
+		<h1 id="logo-text"><a href="index.html" title="">CiteSeerExtractor</a></h1>
+		<p id="intro">A RESTful API for extracting information from scholarly documents...</p>
+		
+		<!-- navigation -->
+		<div  id="nav">
+			<ul>
+				<li><a href="index.html">Home</a></li>
+				<li><a href="web_use.html">Web Use</a></li>
+				<li id="current"><a href="api_use.html">API Use</a></li>
+				<li><a href="people.html">People</a></li>
+				<li><a href="about.html">About</a></li>
+				<li><a href="faq.html">FAQ</a></li>	
+				<li><a href="contact.html">Contact</a></li>		
+			</ul>		
+		</div>		
+
+	<!-- header ends here -->
+	</div>
+	
+	<!-- content starts -->
+	<div id="content-outer"><div id="content-wrapper" class="container_16">
+	
+		<!-- main -->
+		<div id="main" class="grid_16">
+				
+			
+			<div class="pagehead">RESTful API Use</div>
+			
+			
+				
+            <p style="padding-top:10px"><strong>The CiteSeerExtractor</strong> RESTful API supports POST and GET methods for submitting documents and extracting information from them as well as a DELETE method for deleting a document. The base URL is <a href="http://citeseerextractor.ist.psu.edu/extractor">http://citeseerextractor.ist.psu.edu/extractor</a>. </p> 
+            
+            <h4>REST Methods</h4>
+            <p>The methods supported by CiteSeerExtractor are summarized in the Table below.</p>
+            
+            <table>
+            <tr><td class="heading">Method</td><td class="heading">URL</td><td class="heading">Description</td><td class="heading">Returns</td><td class="heading">Options</td></tr>
+            
+            <tr><td>POST</td><td>/</td><td>Uploads a new PDF document either via a form or via bytestream</td><td>XML document with URIs to resource, <i>resource_id</i></td><td>myfile=@filename (required for form POST)</td></tr>
+            
+            <tr><td>GET</td><td>/<i>{resource_id}</i>/pdf</td><td>Used to download original PDF of resource</td><td>PDF document for resource</td><td>N/A</td></tr>
+            
+            <tr><td>GET</td><td>/<i>{resource_id}</i>/header</td><td>Extracts the header information (authors, title, etc) from the resource</td><td>Representation of header information</td><td>output={xml (default) | json}</td></tr>
+            
+            <tr><td>GET</td><td>/<i>{resource_id}</i>/citations</td><td>Extracts the citations from the resource</td><td>Representation of the citations</td><td>output={xml (default) | json}</td></tr>
+            
+            <tr><td>GET</td><td>/<i>{resource_id}</i>/body</td><td>Extracts the body (text excluding header and citations) from the resource</td><td>Representation of the body</td><td>output={xml (default) | json}</td></tr>
+            
+            <tr><td>GET</td><td>/<i>{resource_id}</i>/text</td><td>Extracts the full text from the resource</td><td>Full text of resource</td><td>N/A</td></tr>
+            
+            <tr><td>DELETE</td><td>/<i>{resource_id}</i></td><td>Deletes the resource</td><td>Confirmation</td><td>N/A</td></tr>
+            
+            </table>
+            
+            <h4>Example</h4>
+            <p>Here's a brief example of how the API can be used with cURL.</p>
+            
+            <p>
+            <b>Submit Document</b><br />
+            Via form: <code>curl -F myfile=@/path/to/file.pdf "http://citeseerextractor.ist.psu.edu/extractor"</code>
+            Bytestream: <code>curl -X POST --data-binary @/path/to/file.pdf "http://citeseerextractor.ist.psu.edu/extractor"</code>
+            Returns: 
+            <code>
+            &lt;CSXAPIMetadata><br />
+						&lt;pdf>http://citeseerextractor.ist.psu.edu/extractor/<i>{resource_id}</i>/pdf&lt;/pdf><br />
+						&lt;header>http://citeseerextractor.ist.psu.edu/extractor/<i>{resource_id}</i>/header&lt;/header><br />
+						&lt;citations>http://citeseerextractor.ist.psu.edu/extractor/<i>{resource_id}</i>/citations&lt;/citations><br />
+						&lt;body>http://citeseerextractor.ist.psu.edu/extractor/<i>{resource_id}</i>/body&lt;/body><br />
+						&lt;text>http://citeseerextractor.ist.psu.edu/extractor/<i>{resource_id}</i>/text&lt;/text><br />
+						&lt;/CSXAPIMetadata><br />
+						</code>
+            </p>
+            
+            <p>
+            <b>Retrieve Content</b><br>
+            <code>curl http://citeseerextractor.ist.psu.edu/extractor/<i>{resource_id}</i>/<b>header</b> (replace header with citations, body, etc)</code>
+            Returns:<code>
+            &lt;?xml version="1.0" encoding="UTF-8"?><br />
+						&lt;CSXAPIMetadata><br />
+						&lt;algorithm name="SVM HeaderParse" version="0.2"><br />
+						&lt;title>Paper Title&lt;/title><br />
+						&lt;authors><br />
+						&lt;author><br />
+						&lt;name>Author 1&lt;/name><br />
+						&lt;affiliation>Author's affiliation&lt;/affiliation><br />
+						&lt;address>Authors address&lt;/address><br />
+						...<br />
+						...<br />
+						...<br />
+						&lt;/CSXAPIMetadata>
+						</code>
+						</p>
+						
+						<p>
+            <b>Delete</b><br>
+            From time to time the uploaded documents are manually removed. However, you can explicitly remove a document if you want.
+            <code>curl -X DELETE http://citeseerextractor.ist.psu.edu/extractor/<i>{resource_id}</i></code>
+            Returns:<code>DELETED <i>resource_id</i></code>
+            </p>
+			
+		
+		<!-- main ends -->
+		</div>
+		
+	<!-- contents end here -->	
+	</div>
+	<!-- footer starts here -->	
+<!-- 	<div id="footer-wrapper" class="container_16"> -->
+		
+		<div id="footer-bottom">
+	
+			<p class="bottom-left">			
+			&nbsp; &copy;2013 College of Information Sciences and Technology, The Pennsylvania State University&nbsp; &nbsp;
+			<a href="http://www.bluewebtemplates.com/" title="Website Templates">website templates</a> by <a href="http://www.styleshout.com/">styleshout</a>
+			</p>	
+			
+			<p class="bottom-right" >
+				<a href="index.html">Home</a> |
+				<a href="index.html">Sitemap</a> |
+				<a href="index.html">RSS Feed</a> |						
+				<a href="http://jigsaw.w3.org/css-validator/check/referer">CSS</a> | 
+		   	    <a href="http://validator.w3.org/check/referer">XHTML</a>
+			</p>
+<!-- 			https://github.com/SeerLabs/CiteSeerExtractor/zipball/master -->
+	
+		</div>	
+			
+<!-- 	</div> -->
+	<!-- footer ends here -->
+<!-- </div> -->
+</body>
+</html>

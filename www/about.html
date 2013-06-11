@@ -1,0 +1,108 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+
+<title>CiteSeerExtractor</title>
+
+<meta http-equiv="content-type" content="application/xhtml+xml; charset=UTF-8" />
+<meta name="author" content="Erwin Aligam - styleshout.com" />
+<meta name="description" content="Site Description Here" />
+<meta name="keywords" content="keywords, here" />
+<meta name="robots" content="index, follow, noarchive" />
+<meta name="googlebot" content="noarchive" />
+
+<link rel="stylesheet" type="text/css" media="screen" href="css/screen.css" />
+
+</head>
+<body>
+
+	<!-- header starts-->
+	<div id="header-wrap">
+	<div id="header" class="container_16">						
+		
+		<h1 id="logo-text"><a href="index.html" title="">CiteSeerExtractor</a></h1>
+		<p id="intro">A RESTful API for extracting information from scholarly documents...</p>
+		
+		<!-- navigation -->
+		<div  id="nav">
+			<ul>
+				<li><a href="index.html">Home</a></li>
+				<li><a href="web_use.html">Web Use</a></li>
+				<li><a href="api_use.html">API Use</a></li>
+				<li><a href="install.html">Installation</a></li>
+				<li><a href="people.html">People</a></li>
+				<li id="current"><a href="about.html">About</a></li>
+				<li><a href="faq.html">FAQ</a></li>	
+				<li><a href="contact.html">Contact</a></li>		
+			</ul>		
+		</div>		
+
+	<!-- header ends here -->
+	</div>
+	
+	<!-- content starts -->
+	<div id="content-outer"><div id="content-wrapper" class="container_16">
+	
+		<!-- main -->
+		<div id="main" class="grid_16">
+			<div class="pagehead">About</div>
+			
+			<p>Extracting information from scholarly documents is an important and common task in academic digital libraries and publication analysis. For instance, citations need to be extracted for citation analysis and to build citation and co-authorship graphs. Similarly, header information, such as title, author, and abstracts are extracted for display and easy search. <strong>CiteSeerExtractor</strong> provides a uniform and straight-forward method for performing this information extraction via a standard RESTful interface. </p>
+			
+			<p>CiteSeerExtractor runs as a standalone Web server (see the documentation for running details) and can either be included in any scientific document workflow.</p>
+			
+			<p>CiteSeerExtractor is developed at the Pennsylvania State University</p>
+			
+			<h4>Tools</h4>
+			<p>CiteSeerExtractor incorporates a series of open source tools, most of which are used in the <a href="http://citeseerx.ist.psu.edu">CiteSeerX digital library</a>. These tools are combined in CiteSeerExtractor in order to provide a simple workflow for information extraction.</p>
+			
+			<p>The tools currently in use in CiteSeerExtractor are:
+			<table>
+			<tr><td class="heading">Name</td><td class="heading">Description</td><td class="heading">URL</td><td class="heading">License</td></tr>
+			
+			<tr><td>PDFBox</td><td>A Java library maintained by the Apache Foundation for extracting content from PDFs. In CiteSeerExtractor PDFBox is used for PDF to text conversion.</td><td><a href="http://pdfbox.apache.org/">http://pdfbox.apache.org/</a></td><td>Apache License v2.0</td></tr>
+			
+			<tr><td>ParsCit</td><td>Open-source CRF Reference String and Logical Document Structure Parsing Package</td><td><a href="http://wing.comp.nus.edu.sg/parsCit/">http://wing.comp.nus.edu.sg/parsCit/</a></td><td>LGPL</td></tr>
+			
+			<tr><td>SVMHeader Parse</td><td>Part of the SeerSuite package that uses SVMs for classifying the different parts of the headers in scientific documents</td><td><a href="http://sourceforge.net/projects/citeseerx/">http://sourceforge.net/projects/citeseerx/</a></td><td>Apache License v2.0</td></tr>
+						
+			</table>
+			
+			</p>
+			
+			<h4>License</h4>
+			<p>Excluding the tools mentioned above and any other libraries that are included in CiteSeerExtractor and made available under their own licences, CiteSeerExtractor is available under the Apache License v2.0</p>
+			
+		<!-- main ends -->
+		</div>
+		
+	<!-- contents end here -->	
+	</div>
+	<!-- footer starts here -->	
+<!-- 	<div id="footer-wrapper" class="container_16"> -->
+		
+		<div id="footer-bottom">
+	
+			<p class="bottom-left">			
+			&nbsp; &copy;2013 College of Information Sciences and Technology, The Pennsylvania State University&nbsp; &nbsp;
+			<a href="http://www.bluewebtemplates.com/" title="Website Templates">website templates</a> by <a href="http://www.styleshout.com/">styleshout</a>
+			</p>	
+			
+			<p class="bottom-right" >
+				<a href="index.html">Home</a> |
+				<a href="index.html">Sitemap</a> |
+				<a href="index.html">RSS Feed</a> |						
+				<a href="http://jigsaw.w3.org/css-validator/check/referer">CSS</a> | 
+		   	    <a href="http://validator.w3.org/check/referer">XHTML</a>
+			</p>
+<!-- 			https://github.com/SeerLabs/CiteSeerExtractor/zipball/master -->
+	
+		</div>	
+			
+<!-- 	</div> -->
+	<!-- footer ends here -->
+<!-- </div> -->
+</body>
+</html>
