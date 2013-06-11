@@ -1,0 +1,127 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+
+<title>CiteSeerExtractor</title>
+
+<meta http-equiv="content-type" content="application/xhtml+xml; charset=UTF-8" />
+<meta name="author" content="Erwin Aligam - styleshout.com" />
+<meta name="description" content="Site Description Here" />
+<meta name="keywords" content="keywords, here" />
+<meta name="robots" content="index, follow, noarchive" />
+<meta name="googlebot" content="noarchive" />
+
+<link rel="stylesheet" type="text/css" media="screen" href="css/screen.css" />
+
+</head>
+<body>
+
+	<!-- header starts-->
+	<div id="header-wrap">
+	<div id="header" class="container_16">						
+		
+		<h1 id="logo-text"><a href="index.html" title="">CiteSeerExtractor</a></h1>
+		<p id="intro">A RESTful API for extracting information from scholarly documents...</p>
+		
+		<!-- navigation -->
+		<div  id="nav">
+			<ul>
+				<li><a href="index.html">Home</a></li>
+				<li><a href="web_use.html">Web Use</a></li>
+				<li><a href="api_use.html">API Use</a></li>
+				<li id="current"><a href="setup.html">Setup</a></li>
+				<li><a href="people.html">People</a></li>
+				<li><a href="about.html">About</a></li>
+				<li><a href="faq.html">FAQ</a></li>	
+				<li><a href="contact.html">Contact</a></li>		
+			</ul>		
+		</div>		
+
+	<!-- header ends here -->
+	</div>
+	
+	<!-- content starts -->
+	<div id="content-outer"><div id="content-wrapper" class="container_16">
+	
+		<!-- main -->
+		<div id="main" class="grid_16">
+			<div class="pagehead">Setup</div>
+			
+			<p>We're planning on packaging CiteSeerExtractor so that no setup is required and so that <i>It Just Works!</i> However, until we do that, a little bit of work is needed to set it up. To setup CiteSeerExtractor you'll need to know a little bit about setting up Linux systems and installing packages.</p> 
+			
+			<p>Here we go...</p>
+			
+			<p>
+			<h4>Step 0: Dependencies</h4>
+                        This isn't really a step in the setup but you'll need to at least satisfy these dependencies to get started:
+                        <ul>
+                        <li>Python >= 2.7</li>
+                        <li>Java >= 1.6</li>
+                        </ul>
+                        There are other dependencies but we'll describe how to install them.
+                        </p>
+                        			
+			<p>
+			<h4>Step 1: Get the code</h4>
+			The code is publicly available on GitHub, so clone the git repository to get a copy of the code
+			<code>git clone git://github.com/SeerLabs/CiteSeerExtractor.git</code>
+			Easy, now comes the (kinda) hard part.
+			</p>
+			
+			<p><h4>Step 2: Install the other dependencies</h4>
+                        In addition to Python and Java, CiteSeerExtractor also depends on a number of packages. They are: <b>web.py</b> (for the Web server), <b>xmltodict</b> (a python package for converting XML to JSON), and <b>String::Approx</b> (a Perl module used during extraction). To install the packages issue the following commands.
+                        
+                        <ul>
+			<li>sudo easy_install web.py (you can get easy_install from python-setuptools if you don't already have it)</li>
+			<li>sudo pip install xmltodict (you can get install pip with easy_install if you don't already have it)</li>
+			<li>sudo cpan String::Approx</li>
+			</ul>
+			
+			<p><h4>Step 3: Make sure you have support for 32-bit executables</h4>
+			Some of the executables used in CiteSeerExtractor were compiled for 32-bit architectures. If you have a 32-bit machine, you can skip this step. Otherwise, you need to install support for 32-bit executables:
+			<ul>
+			<li><b>RHEL/CentOS:</b> sudo yum install glibc.i686 libstdc++.i686</li>
+			<li><b>Ubuntu:</b> sudo apt-get install ia32-libs-multiarch</li>
+			</ul>
+			</p>
+			
+			<p>
+			<h4>Step 4: Run and test</h4>
+			Run the webserver with:
+			<code>python service.py [port]</code>
+			Navigate to http://localhost:port/extractor and try a document and check the console output for errors. Also, see how to <a href="api_use">use the API.</a>
+			</p>
+			
+		<!-- main ends -->
+		</div>
+		
+	<!-- contents end here -->	
+	</div>
+	<!-- footer starts here -->	
+<!-- 	<div id="footer-wrapper" class="container_16"> -->
+		
+		<div id="footer-bottom">
+	
+			<p class="bottom-left">			
+			&nbsp; &copy;2013 College of Information Sciences and Technology, The Pennsylvania State University&nbsp; &nbsp;
+			<a href="http://www.bluewebtemplates.com/" title="Website Templates">website templates</a> by <a href="http://www.styleshout.com/">styleshout</a>
+			</p>	
+			
+			<p class="bottom-right" >
+				<a href="index.html">Home</a> |
+				<a href="index.html">Sitemap</a> |
+				<a href="index.html">RSS Feed</a> |						
+				<a href="http://jigsaw.w3.org/css-validator/check/referer">CSS</a> | 
+		   	    <a href="http://validator.w3.org/check/referer">XHTML</a>
+			</p>
+<!-- 			https://github.com/SeerLabs/CiteSeerExtractor/zipball/master -->
+	
+		</div>	
+			
+<!-- 	</div> -->
+	<!-- footer ends here -->
+<!-- </div> -->
+</body>
+</html>
