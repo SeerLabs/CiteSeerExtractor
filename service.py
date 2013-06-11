@@ -90,8 +90,7 @@ class Index:
 	
 	def GET(self):
 		web.header('Content-Type','text/html; charset=utf-8') 	
-		render = web.template.render('www/')
-		return render.index()
+		raise web.seeother('/static/index.html')
 		
 class Extractor:
 	
