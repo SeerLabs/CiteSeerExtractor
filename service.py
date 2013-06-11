@@ -90,19 +90,9 @@ class Index:
 	
 	def GET(self):
 		web.header('Content-Type','text/html; charset=utf-8') 	
-		response = "<h2>Welcome to the CiteSeerExtractor</h2>"
-		response = response + "<h3>Homepage</h3>"
-		response = response + "Visit the CiteSeerExtractor homepage at <a href=\"" + web.ctx.homedomain + "\">" + web.ctx.homedomain + "</a>"
-		response = response + "<h3>Web-based Extraction</h3>"
-		response = response + "To extract information from scholarly PDFs via the web, please go to <a href=\"" + web.ctx.homedomain + "/extractor \">" + web.ctx.homedomain + "/extractor</a> where you can upload a document"
-		response = response + "<h3>Programmatic Extraction</h3>"
-		response = response + "To extract information programmatically we provide an example using cURL, please view the documentation for more information"
-		response = response + "<br /><br /><i>curl -F myfile=@/path/to/file.pdf \"" + web.ctx.homedomain + "/extractor\"</i>"
-		response = response + "<h3>Source Code</h3>"
-		response = response + "The source code for CiteSeerExtractor can be found on GitHub at <a href=\"https://github.com/SeerLabs/CiteSeerExtractor/\">https://github.com/SeerLabs/CiteSeerExtractor/</a>"
+		render = web.template.render('www/')
+		return render.index()
 		
-		return response
-
 class Extractor:
 	
 	def GET(self, datafile, method):
