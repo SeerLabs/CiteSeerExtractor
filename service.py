@@ -5,6 +5,7 @@ import subprocess
 import xmltodict
 import json
 import cgi
+import shutil
 
 urls = (
 
@@ -17,6 +18,7 @@ urls = (
 )
 
 ROOT_FOLDER="./" # there must be a trailing /
+TMP_FOLDER=tempfile.gettempdir()+"/citeseerextractor/" #Specifies temp folder - useful for cleaning up afterwards
 
 cgi.maxlen = 5 * 1024 * 1024 # 5MB file size limit for uploads
 
@@ -51,7 +53,7 @@ class Util:
 		Handles upload coming from web.input, write it to a temp file, and return the path to that temp file
 		"""
 		web.debug(inObject['myfile'].filename) # This is the filename
-		handler, path = tempfile.mkstemp()
+		handler, path = tempfile.mkstemp(dir=TMP_FOLDER)
 		f = open(path,'w')
 		f.write(inObject['myfile'].file.read())
 		f.close()
@@ -101,7 +103,7 @@ class Extractor:
 		extractor = Extraction()
 		utilities = Util()
 		data = ''
-		txtfile = '/tmp/' + datafile + '.txt'
+		txtfile = TMP_FOLDER + datafile + '.txt'
 		
 		"""Check if the file exists, if not return a 404"""
 		if not os.path.exists(txtfile):
@@ -109,11 +111,11 @@ class Extractor:
 		
 		try:
 			if method == 'text':
-				txtfile = '/tmp/' + datafile + '.txt'
+				txtfile = TMP_FOLDER + datafile + '.txt'
 				web.header('Content-Type', 'text/text') # Set the Header
 				return open(txtfile,"rb").read()
 			elif method == 'pdf':
-				pdffile = '/tmp/' + datafile
+				pdffile = TMP_FOLDER + datafile
 				web.header('Content-Type', 'application/pdf') # Set the Header
 				return open(pdffile,"rb").read()
 			else:
@@ -175,12 +177,12 @@ class FileHandler:
 	def DELETE(self,fileid):
 		
 		""" 404 when txt file doesn't exist """
-		if not os.path.exists('/tmp/' + fileid + '.txt'): 
+		if not os.path.exists(TMP_FOLDER + fileid + '.txt'): 
 			return web.notfound()
 		
 		try:
-			os.unlink('/tmp/' + fileid)
-			os.unlink('/tmp/' + fileid + '.txt')
+			os.unlink(TMP_FOLDER + fileid)
+			os.unlink(TMP_FOLDER + fileid + '.txt')
 			return 'DELETED ' + fileid
 		except (IOError, OSError) as ex:
 			web.debug(ex)
@@ -211,5 +213,12 @@ class FileHandler:
 			#return web.internalerror()
 
 if __name__ == "__main__":
+
+	if os.path.isdir(TMP_FOLDER): #Create the temp folder
+		shutil.rmtree(TMP_FOLDER)
+		
+	os.mkdir(TMP_FOLDER, 0o700)
+		
 	app = web.application(urls, globals()) 
 	app.run()
+	
