@@ -4,6 +4,7 @@ import os
 import subprocess
 import xmltodict
 import json
+import cgi
 
 urls = (
 
@@ -16,6 +17,8 @@ urls = (
 )
 
 ROOT_FOLDER="./" # there must be a trailing /
+
+cgi.maxlen = 5 * 1024 * 1024 # 1MB
 
 class Extraction:
 	"""
@@ -150,9 +153,9 @@ class FileHandler:
 		
 	def POST(self):
 		"""Actually submits the file"""
-		pdffile = web.input(myfile={})
-		utilities = Util()
 		try:
+			pdffile = web.input(myfile={})
+			utilities = Util()
 			pdfpath = utilities.handleUpload(pdffile)
 			txtpath = utilities.pdf2text(pdfpath)
 			fileid = os.path.basename(pdfpath)
@@ -165,7 +168,10 @@ class FileHandler:
 		except (IOError, OSError) as ex:
 			web.debug(ex)
 			return web.internalerror()
-			
+		except ValueError as ex: 
+			web.debug(ex)
+			return "File too large. Limit is ", cgi.maxlen              
+
 	def DELETE(self,fileid):
 		
 		""" 404 when txt file doesn't exist """
