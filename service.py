@@ -18,7 +18,7 @@ urls = (
 
 ROOT_FOLDER="./" # there must be a trailing /
 
-cgi.maxlen = 5 * 1024 * 1024 # 1MB
+cgi.maxlen = 5 * 1024 * 1024 # 5MB file size limit for uploads
 
 class Extraction:
 	"""
@@ -186,30 +186,29 @@ class FileHandler:
 			web.debug(ex)
 			return web.internalerror()
 				
-class PDFStreamHandler:
-
+#@Kyle: Commented out until I figure out how to limit the size of the web.data() stream
+#class PDFStreamHandler:
 # Post the raw pdf data
-	def POST(self):
-		utilities = Util()
-		data = web.data()
-		try:
-			handler, path = tempfile.mkstemp()
-			f = open(path,'wb')
-			f.write(data)
-			f.close()
-			web.debug(path)
-			txtpath = utilities.pdf2text(path)
-			fileid = os.path.basename(path)
-			location = web.ctx.homedomain + '/extractor/' + fileid + '/pdf'
-			web.ctx.status = '201 CREATED'
-			web.header('Location', location)
-			web.header('Content-Type','text/xml; charset=utf-8') 
-			response = utilities.printXMLLocations(fileid)
-			return response
-		except (IOError, OSError) as ex:
-			web.debug(ex)
-			return web.internalerror()
-
+	#def POST(self):
+		#utilities = Util()
+		#data = web.data()
+		#try:
+			#handler, path = tempfile.mkstemp()
+			#f = open(path,'wb')
+			#f.write(data)
+			#f.close()
+			#web.debug(path)
+			#txtpath = utilities.pdf2text(path)
+			#fileid = os.path.basename(path)
+			#location = web.ctx.homedomain + '/extractor/' + fileid + '/pdf'
+			#web.ctx.status = '201 CREATED'
+			#web.header('Location', location)
+			#web.header('Content-Type','text/xml; charset=utf-8') 
+			#response = utilities.printXMLLocations(fileid)
+			#return response
+		#except (IOError, OSError) as ex:
+			#web.debug(ex)
+			#return web.internalerror()
 
 if __name__ == "__main__":
 	app = web.application(urls, globals()) 
