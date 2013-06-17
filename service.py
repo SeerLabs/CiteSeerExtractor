@@ -17,34 +17,32 @@ urls = (
 
 ROOT_FOLDER="./" # there must be a trailing /
 
-# This class does the actual extraction by calling the relevant perl methods
 class Extraction:
+	"""
+	This class does the actual extraction by calling the relevant perl methods
+	Errors are caught in the calling class
+	"""
 	def extractHeaders(self,path):
 		"""extract headers from text file"""
-		try:
-			headers = subprocess.check_output([ROOT_FOLDER+"bin/getHeader.pl",path])
-			web.debug(headers)
-			return headers
-		except Exception as ex:
-			web.debug(ex)
+		headers = subprocess.check_output([ROOT_FOLDER+"bin/getHeader.pl",path])
+		web.debug(headers)
+		return headers
 	def extractCitations(self,path):
 		"""extract citations from text file"""
-		try:
-			citations = subprocess.check_output([ROOT_FOLDER+"bin/getCitations.pl",path])
-			web.debug(citations)
-			return citations
-		except Exception as ex:
-			web.debug(ex)
+		citations = subprocess.check_output([ROOT_FOLDER+"bin/getCitations.pl",path])
+		web.debug(citations)
+		return citations
 	def extractBody(self,path):
 		"""extract body from text file"""
-		try:
-			body = subprocess.check_output([ROOT_FOLDER+"bin/getBody.pl",path])
-			web.debug(body)
-			return body
-		except Exception as ex:
-			web.debug(ex)
+		body = subprocess.check_output([ROOT_FOLDER+"bin/getBody.pl",path])
+		web.debug(body)
+		return body
 			
 class Util:
+	"""
+	Some utility methods for handling uploads and printing output
+	Errors are caught in the calling classes
+	"""
 	def handleUpload(self, inObject):
 		"""
 		Handles upload coming from web.input, write it to a temp file, and return the path to that temp file
@@ -62,12 +60,11 @@ class Util:
 		#calls pdfbox to convert a pdf file into text file. 
 		#returns the path of the text file
 		#"""
-		try:
-			subprocess.call(["java", "-jar", ROOT_FOLDER+"pdfbox/pdfbox-app-1.8.1.jar", "ExtractText", 
-			path, path+".txt"])
-			return path+".txt"
-		except Exception as ex:
-			web.debug(ex)
+		ret = subprocess.call(["java", "-jar", ROOT_FOLDER+"pdfbox/pdfbox-app-1.8.1.jar", "ExtractText", path, path+".txt"])
+		""" Raise an error if text extraction failed"""
+		if ret > 0: 
+			raise IOError
+		return path+".txt"
 			
 	def printXML(self, xml):
 		"""Returns XMl with the proper headers"""
@@ -87,7 +84,7 @@ class Util:
 		return self.printXML(response)
 
 class Index:
-	
+	"""Loads the index page from the static dir"""
 	def GET(self):
 		web.header('Content-Type','text/html; charset=utf-8') 	
 		raise web.seeother('/static/index.html')
@@ -102,32 +99,42 @@ class Extractor:
 		utilities = Util()
 		data = ''
 		txtfile = '/tmp/' + datafile + '.txt'
-		if method == 'text':
-			txtfile = '/tmp/' + datafile + '.txt'
-			web.header('Content-Type', 'text/text') # Set the Header
-			return open(txtfile,"rb").read()
-		elif method == 'pdf':
-			pdffile = '/tmp/' + datafile
-			web.header('Content-Type', 'application/pdf') # Set the Header
-			return open(pdffile,"rb").read()
-		else:
-			if method == 'header':
-				data = data + extractor.extractHeaders(txtfile)
-			elif method == 'citations':
-				data = data + extractor.extractCitations(txtfile)
-			elif method == 'body':
-				data = data + extractor.extractBody(txtfile)
-			#Print XML or JSON
-			if params.output == 'xml' or params.output == '':
-				web.header('Content-Type','text/xml; charset=utf-8')
-				return utilities.printXML(data)
-			elif params.output == 'json':
-				jsondata = xmltodict.parse(data)
-				web.header('Content-Type','text/json; charset=utf-8') 	
-				return json.dumps(jsondata)
+		
+		"""Check if the file exists, if not return a 404"""
+		if not os.path.exists(txtfile):
+			return web.notfound()
+		
+		try:
+			if method == 'text':
+				txtfile = '/tmp/' + datafile + '.txt'
+				web.header('Content-Type', 'text/text') # Set the Header
+				return open(txtfile,"rb").read()
+			elif method == 'pdf':
+				pdffile = '/tmp/' + datafile
+				web.header('Content-Type', 'application/pdf') # Set the Header
+				return open(pdffile,"rb").read()
 			else:
-				return 'Unsupported output format. Options are: "xml" (default) and "json"'
-			
+				if method == 'header':
+					data = data + extractor.extractHeaders(txtfile)
+				elif method == 'citations':
+					data = data + extractor.extractCitations(txtfile)
+				elif method == 'body':
+					data = data + extractor.extractBody(txtfile)
+				#Print XML or JSON
+				if params.output == 'xml' or params.output == '':
+					web.header('Content-Type','text/xml; charset=utf-8')
+					return utilities.printXML(data)
+				elif params.output == 'json':
+					jsondata = xmltodict.parse(data)
+					web.header('Content-Type','text/json; charset=utf-8') 	
+					return json.dumps(jsondata)
+				else:
+					return 'Unsupported output format. Options are: "xml" (default) and "json"'
+		
+		except (IOError, OSError) as er: #Internal error, i.e. during extraction
+			web.debug(er)
+			return web.internalerror()
+		
 
 class FileHandler:
 	
@@ -155,16 +162,24 @@ class FileHandler:
 			web.header('Content-Type','text/xml; charset=utf-8') 
 			response = utilities.printXMLLocations(fileid)
 			return response
-		except Exception as ex:
+		except (IOError, OSError) as ex:
 			web.debug(ex)
+			return web.internalerror()
 			
 	def DELETE(self,fileid):
 		
-		os.unlink('/tmp/' + fileid)
-		os.unlink('/tmp/' + fileid + '.txt')
-		return 'DELETED ' + fileid
+		""" 404 when txt file doesn't exist """
+		if not os.path.exists('/tmp/' + fileid + '.txt'): 
+			return web.notfound()
 		
-		
+		try:
+			os.unlink('/tmp/' + fileid)
+			os.unlink('/tmp/' + fileid + '.txt')
+			return 'DELETED ' + fileid
+		except (IOError, OSError) as ex:
+			web.debug(ex)
+			return web.internalerror()
+				
 class PDFStreamHandler:
 
 # Post the raw pdf data
@@ -185,10 +200,11 @@ class PDFStreamHandler:
 			web.header('Content-Type','text/xml; charset=utf-8') 
 			response = utilities.printXMLLocations(fileid)
 			return response
-		except Exception as ex:
+		except (IOError, OSError) as ex:
 			web.debug(ex)
+			return web.internalerror()
 
 
 if __name__ == "__main__":
-   app = web.application(urls, globals()) 
-   app.run()
+	app = web.application(urls, globals()) 
+	app.run()
