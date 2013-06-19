@@ -60,7 +60,9 @@
             <table>
             <tr><td class="heading">Method</td><td class="heading">URL</td><td class="heading">Description</td><td class="heading">Returns</td><td class="heading">Options</td></tr>
             
-            <tr><td>POST</td><td>/</td><td>Uploads a new PDF document either via a form or via bytestream</td><td>XML document with URIs to resource, <i>resource_id</i></td><td>myfile=@filename (required for form POST)</td></tr>
+            <tr><td>POST</td><td>/</td><td>Uploads a new PDF document via a form</td><td>XML document with URIs to resource, <i>resource_id</i></td><td>myfile=@filename</td></tr>
+            
+            <tr><td>POST</td><td>/pdf</td><td>Uploads a new PDF document via bytestream</td><td>XML document with URIs to resource, <i>resource_id</i></td><td>N/A</td></tr>
             
             <tr><td>GET</td><td>/<i>{resource_id}</i>/pdf</td><td>Used to download original PDF of resource</td><td>PDF document for resource</td><td>N/A</td></tr>
             
@@ -82,7 +84,7 @@
             <p>
             <b>Submit Document</b><br />
             Via form: <code>curl -F myfile=@/path/to/file.pdf "http://citeseerextractor.ist.psu.edu/extractor"</code>
-            Bytestream: <code>curl -X POST --data-binary @/path/to/file.pdf "http://citeseerextractor.ist.psu.edu/extractor"</code>
+            Bytestream: <code>curl -X POST --data-binary @/path/to/file.pdf "http://citeseerextractor.ist.psu.edu/extractor/pdf"</code>
             Returns: 
             <code>
             &lt;CSXAPIMetadata><br />
