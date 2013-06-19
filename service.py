@@ -188,29 +188,52 @@ class FileHandler:
 			web.debug(ex)
 			return web.internalerror()
 				
-#@Kyle: Commented out until I figure out how to limit the size of the web.data() stream
-#class PDFStreamHandler:
-# Post the raw pdf data
-	#def POST(self):
-		#utilities = Util()
-		#data = web.data()
-		#try:
-			#handler, path = tempfile.mkstemp()
-			#f = open(path,'wb')
-			#f.write(data)
-			#f.close()
-			#web.debug(path)
-			#txtpath = utilities.pdf2text(path)
-			#fileid = os.path.basename(path)
-			#location = web.ctx.homedomain + '/extractor/' + fileid + '/pdf'
-			#web.ctx.status = '201 CREATED'
-			#web.header('Location', location)
-			#web.header('Content-Type','text/xml; charset=utf-8') 
-			#response = utilities.printXMLLocations(fileid)
-			#return response
-		#except (IOError, OSError) as ex:
-			#web.debug(ex)
-			#return web.internalerror()
+
+class PDFStreamHandler:
+	def POST(self):
+		"""Posts a PDF bytestream"""
+		utilities = Util()
+		content_size = -1
+		
+		# Check for Content-Length header
+		try:
+			content_size = int(web.ctx.env.get('CONTENT_LENGTH'))
+		except (TypeError, ValueError):
+			content_size = 0
+		try: #Max file size
+			if content_size > cgi.maxlen:
+				raise ValueError
+		except ValueError as ex:
+			web.debug(ex)
+			return "File too large. Limit is ", cgi.maxlen              
+		try:
+			if content_size == 0: #No Content-Length header
+				raise ValueError
+		except ValueError as ex:
+			web.debug(ex)
+			return "Please set Content-Length header for bytestream upload"
+		
+		try:
+			data = web.data()
+			handler, path = tempfile.mkstemp()
+			f = open(path,'wb')
+			f.write(data)
+			f.close()
+			web.debug(path)
+			txtpath = utilities.pdf2text(path)
+			fileid = os.path.basename(path)
+			location = web.ctx.homedomain + '/extractor/' + fileid + '/pdf'
+			web.ctx.status = '201 CREATED'
+			web.header('Location', location)
+			web.header('Content-Type','text/xml; charset=utf-8') 
+			response = utilities.printXMLLocations(fileid)
+			return response
+		except (IOError, OSError) as ex:
+			web.debug(ex)
+			return web.internalerror()
+		except ValueError as ex: 
+			web.debug(ex)
+			return "File too large. Limit is ", cgi.maxlen              
 
 if __name__ == "__main__":
 
