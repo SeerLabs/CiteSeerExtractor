@@ -71,6 +71,11 @@ class Util:
 			raise IOError
 		return path+".txt"
 			
+	def doFilter(self, path):
+		docFilter = subprocess.check_output([ROOT_FOLDER+"bin/doFilter.pl",path])
+		web.debug(docFilter)
+		return docFilter
+		
 	def printXML(self, xml):
 		"""Returns XMl with the proper headers"""
 		response = """<?xml version="1.0" encoding="UTF-8"?>\n"""
@@ -160,6 +165,20 @@ class FileHandler:
 			utilities = Util()
 			pdfpath = utilities.handleUpload(pdffile)
 			txtpath = utilities.pdf2text(pdfpath)
+			
+			try:
+				filterStatus = utilities.doFilter(txtpath)
+				if filterStatus == "-1":
+					raise OSError
+				elif filterStatus == "0":
+					raise ValueError
+			except OSError as ex:
+				web.debug(ex)
+				return web.internalerror()
+			except ValueError as ex: 
+				web.debug(ex)
+				return "Your document failed our academic document filter "
+				
 			fileid = os.path.basename(pdfpath)
 			location = web.ctx.homedomain + '/extractor/pdf/' + fileid
 			web.ctx.status = '201 CREATED'
