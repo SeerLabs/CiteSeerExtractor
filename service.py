@@ -165,7 +165,10 @@ class FileHandler:
 			utilities = Util()
 			pdfpath = utilities.handleUpload(pdffile)
 			txtpath = utilities.pdf2text(pdfpath)
-			
+			# Here we test if the paper was actually an academic paper using a document filter
+			# 1 True
+			# 0 False
+			# -1 OSError
 			try:
 				filterStatus = utilities.doFilter(txtpath)
 				if filterStatus == "-1":

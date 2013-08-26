@@ -172,6 +172,7 @@ sub ExtractHeaderInformation {
     if (length($header) < $nMinHeaderLength) {
 	return ('Header could not be extracted');
     }
+
     return ('',$header);
 }
 
