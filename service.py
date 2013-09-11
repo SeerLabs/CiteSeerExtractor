@@ -86,7 +86,8 @@ class Util:
 	
 	def printXMLLocations(self, fileid):
 		"""Returns the URIs for different types of metadata"""
-		response = '<pdf>' + web.ctx.homedomain + '/extractor/' + fileid + '/pdf</pdf>\n'
+		response = '<token>' + fileid + '</token>'
+		response = response + '<pdf>' + web.ctx.homedomain + '/extractor/' + fileid + '/pdf</pdf>\n'
 		response = response + '<header>' + web.ctx.homedomain + '/extractor/' + fileid + '/header</header>\n'
 		response = response + '<citations>' + web.ctx.homedomain + '/extractor/' + fileid + '/citations</citations>\n'
 		response = response + '<body>' + web.ctx.homedomain + '/extractor/' + fileid + '/body</body>\n'
@@ -187,6 +188,7 @@ class FileHandler:
 			web.ctx.status = '201 CREATED'
 			web.header('Location', location)
 			web.header('Content-Type','text/xml; charset=utf-8') 
+			web.header('Access-Control-Allow-Origin', '*')
 			response = utilities.printXMLLocations(fileid)
 			return response
 		except (IOError, OSError) as ex:
@@ -237,7 +239,7 @@ class PDFStreamHandler:
 		
 		try:
 			data = web.data()
-			handler, path = tempfile.mkstemp()
+			handler, path = tempfile.mkstemp(dir=TMP_FOLDER)
 			f = open(path,'wb')
 			f.write(data)
 			f.close()
