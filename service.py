@@ -6,6 +6,7 @@ import xmltodict
 import json
 import cgi
 import shutil
+import magic
 
 urls = (
 
@@ -21,6 +22,8 @@ ROOT_FOLDER="./" # there must be a trailing /
 TMP_FOLDER=tempfile.gettempdir()+"/citeseerextractor/" #Specifies temp folder - useful for cleaning up afterwards
 
 cgi.maxlen = 5 * 1024 * 1024 # 5MB file size limit for uploads
+
+allowedTypes = set(['application/pdf', 'text/plain','application/postscript']) # Allowed file types
 
 class Extraction:
 	"""
@@ -48,6 +51,7 @@ class Util:
 	Some utility methods for handling uploads and printing output
 	Errors are caught in the calling classes
 	"""
+
 	def handleUpload(self, inObject):
 		"""
 		Handles upload coming from web.input, write it to a temp file, and return the path to that temp file
@@ -71,10 +75,28 @@ class Util:
 			raise IOError
 		return path+".txt"
 			
-	def doFilter(self, path):
-		docFilter = subprocess.check_output([ROOT_FOLDER+"bin/doFilter.pl",path])
-		web.debug(docFilter)
+	def doFilter(self, path): 
+		"""
+                Pass in the pdfpath here, only tells if file type is allowed or not
+		"""
+                docFilter = 0		
+		fileTypeString = magic.from_file(path, mime=True) # Stores the MIME string that describes the file type
+                web.debug(fileTypeString)
+		if fileTypeString in allowedTypes:
+                   docFilter = 1  # Condition of right file Type                 	   
+                else: 
+                   docFilter = 2  # Condition of wrong file type 
+                web.debug(docFilter)
 		return docFilter
+
+        def academicFilter(self, path): 
+		"""
+		Pass in txtpath here, only tells if document is academic or not
+		"""
+		acaFilter = 0
+     		acaFilter = subprocess.check_output([ROOT_FOLDER+"bin/doFilter.pl",path]) # This is typically either 0 or 1
+		web.debug(acaFilter)
+                return acaFilter
 		
 	def printXML(self, xml):
 		"""Returns XMl with the proper headers"""
@@ -165,24 +187,44 @@ class FileHandler:
 			pdffile = web.input(myfile={})
 			utilities = Util()
 			pdfpath = utilities.handleUpload(pdffile)
-			txtpath = utilities.pdf2text(pdfpath)
-			# Here we test if the paper was actually an academic paper using a document filter
-			# 1 True
-			# 0 False
+			
+			# Here we test if the paper was actually a file of an accepted file type
+			# 1 True - Right File Type
+			# 2 False - Wrong Type (ValueError)
 			# -1 OSError
 			try:
-				filterStatus = utilities.doFilter(txtpath)
-				if filterStatus == "-1":
+				typeFilterStatus = utilities.doFilter(pdfpath)
+				web.debug(typeFilterStatus) # For convenience 
+				if typeFilterStatus == -1: # This condition is probably not very useful anymore
 					raise OSError
-				elif filterStatus == "0":
+				elif typeFilterStatus != 1:
 					raise ValueError
 			except OSError as ex:
 				web.debug(ex)
 				return web.internalerror()
 			except ValueError as ex: 
 				web.debug(ex)
-				return "Your document failed our academic document filter "
-				
+				return "Your document failed our academic document filter due to invalid file type"
+
+			txtpath = utilities.pdf2text(pdfpath)
+			# Here we test if the paper was actually an academic paper using a document filter
+			# 1 True - Academic
+			# 0 False - Not Academic (ValueError)
+			# -1 OSError
+                        try:
+				acaFilterStatus = utilities.academicFilter(txtpath) # Note that this variable is a string
+				web.debug(acaFilterStatus) # For convenience
+				if acaFilterStatus == "-1":
+					raise OSError
+				elif acaFilterStatus != "1":
+					raise ValueError
+			except OSError as ex:
+				web.debug(ex)
+				return web.internalerror()
+			except ValueError as ex: 
+				web.debug(ex)
+				return "Your document failed our academic document filter due to not being academic"
+							
 			fileid = os.path.basename(pdfpath)
 			location = web.ctx.homedomain + '/extractor/pdf/' + fileid
 			web.ctx.status = '201 CREATED'
