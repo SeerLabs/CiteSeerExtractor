@@ -77,26 +77,26 @@ class Util:
 			
 	def doFilter(self, path): 
 		"""
-                Pass in the pdfpath here, only tells if file type is allowed or not
+		Pass in the pdfpath here, only tells if file type is allowed or not
 		"""
-                docFilter = 0		
+		docFilter = 0		
 		fileTypeString = magic.from_file(path, mime=True) # Stores the MIME string that describes the file type
-                web.debug(fileTypeString)
+		web.debug(fileTypeString)
 		if fileTypeString in allowedTypes:
-                   docFilter = 1  # Condition of right file Type                 	   
-                else: 
-                   docFilter = 2  # Condition of wrong file type 
-                web.debug(docFilter)
+			docFilter = 1  # Condition of right file Type                 	   
+		else: 
+			docFilter = 2  # Condition of wrong file type 
+		web.debug(docFilter)
 		return docFilter
 
-        def academicFilter(self, path): 
+	def academicFilter(self, path): 
 		"""
 		Pass in txtpath here, only tells if document is academic or not
 		"""
 		acaFilter = 0
-     		acaFilter = subprocess.check_output([ROOT_FOLDER+"bin/doFilter.pl",path]) # This is typically either 0 or 1
+		acaFilter = subprocess.check_output([ROOT_FOLDER+"bin/doFilter.pl",path]) # This is typically either 0 or 1
 		web.debug(acaFilter)
-                return acaFilter
+		return acaFilter
 		
 	def printXML(self, xml):
 		"""Returns XMl with the proper headers"""
@@ -184,46 +184,42 @@ class FileHandler:
 	def POST(self):
 		"""Actually submits the file"""
 		try:
+			# Here we handle the file upload first, and do the following:
+			# I. Check if the file type is allowed: PDF, TXT or PostScript. This returns:
+			#	1 - Allowed File Type -> Proceed to next step
+			#	2 - Unallowed File Type -> Value error & Display error message
+			# II. Extract the document -> proceed to next step
+			# III. Check if the document is an academic document and returns:
+			#	"1" - Document is academic -> Proceed to next step
+			#	"0" - Document is not academic -> Value error & Display error message
+			#	"-1" - OS error
+			# IV. Form and return XML response
+			
 			pdffile = web.input(myfile={})
 			utilities = Util()
 			pdfpath = utilities.handleUpload(pdffile)
 			
-			# Here we test if the paper was actually a file of an accepted file type
-			# 1 True - Right File Type
-			# 2 False - Wrong Type (ValueError)
-			# -1 OSError
 			try:
 				typeFilterStatus = utilities.doFilter(pdfpath)
-				web.debug(typeFilterStatus) # For convenience 
-				if typeFilterStatus == -1: # This condition is probably not very useful anymore
-					raise OSError
-				elif typeFilterStatus != 1:
+				web.debug(typeFilterStatus)
+				if typeFilterStatus == 2:
 					raise ValueError
-			except OSError as ex:
-				web.debug(ex)
-				return web.internalerror()
-			except ValueError as ex: 
-				web.debug(ex)
-				return "Your document failed our academic document filter due to invalid file type"
-
-			txtpath = utilities.pdf2text(pdfpath)
-			# Here we test if the paper was actually an academic paper using a document filter
-			# 1 True - Academic
-			# 0 False - Not Academic (ValueError)
-			# -1 OSError
-                        try:
-				acaFilterStatus = utilities.academicFilter(txtpath) # Note that this variable is a string
-				web.debug(acaFilterStatus) # For convenience
+				txtpath = utilities.pdf2text(pdfpath)
+				acaFilterStatus = utilities.academicFilter(txtpath)
+				web.debug(acaFilterStatus)
 				if acaFilterStatus == "-1":
 					raise OSError
-				elif acaFilterStatus != "1":
+				elif acaFilterStatus == "0":
 					raise ValueError
 			except OSError as ex:
 				web.debug(ex)
 				return web.internalerror()
-			except ValueError as ex: 
+			except ValueError as ex:
 				web.debug(ex)
-				return "Your document failed our academic document filter due to not being academic"
+				if typeFilterStatus == 2:
+					return "Your document failed our academic document filter due to invalid file type"
+				elif acaFilterStatus == "0":
+					return "Your document failed our academic document filter due to not being academic"
 							
 			fileid = os.path.basename(pdfpath)
 			location = web.ctx.homedomain + '/extractor/pdf/' + fileid
