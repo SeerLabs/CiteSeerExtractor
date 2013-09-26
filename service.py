@@ -23,7 +23,7 @@ TMP_FOLDER=tempfile.gettempdir()+"/citeseerextractor/" #Specifies temp folder - 
 
 cgi.maxlen = 5 * 1024 * 1024 # 5MB file size limit for uploads
 
-allowedTypes = set(['application/pdf', 'text/plain','application/postscript']) # Allowed file types
+allowedTypes = set(['application/pdf', 'application/postscript']) # Allowed file types in addition to text files
 
 class Extraction:
 	"""
@@ -82,7 +82,9 @@ class Util:
 		docFilter = 0		
 		fileTypeString = magic.from_file(path, mime=True) # Stores the MIME string that describes the file type
 		web.debug(fileTypeString)
-		if fileTypeString in allowedTypes:
+		if "text" in fileTypeString:
+			docFilter = 3  # Condition of special case: avoid conversion
+		elif fileTypeString in allowedTypes:
 			docFilter = 1  # Condition of right file Type                 	   
 		else: 
 			docFilter = 2  # Condition of wrong file type 
@@ -106,10 +108,11 @@ class Util:
 		response = response + "</CSXAPIMetadata>\n"
 		return response
 	
-	def printXMLLocations(self, fileid):
+	def printXMLLocations(self, fileid, typeFilterStatus):
 		"""Returns the URIs for different types of metadata"""
 		response = '<token>' + fileid + '</token>'
-		response = response + '<pdf>' + web.ctx.homedomain + '/extractor/' + fileid + '/pdf</pdf>\n'
+		if typeFilterStatus != 3:
+			response = response + '<pdf>' + web.ctx.homedomain + '/extractor/' + fileid + '/pdf</pdf>\n'
 		response = response + '<header>' + web.ctx.homedomain + '/extractor/' + fileid + '/header</header>\n'
 		response = response + '<citations>' + web.ctx.homedomain + '/extractor/' + fileid + '/citations</citations>\n'
 		response = response + '<body>' + web.ctx.homedomain + '/extractor/' + fileid + '/body</body>\n'
@@ -167,7 +170,7 @@ class Extractor:
 		except (IOError, OSError) as er: #Internal error, i.e. during extraction
 			web.debug(er)
 			return web.internalerror()
-		
+
 
 class FileHandler:
 	
@@ -185,9 +188,10 @@ class FileHandler:
 		"""Actually submits the file"""
 		try:
 			# Here we handle the file upload first, and do the following:
-			# I. Check if the file type is allowed: PDF, TXT or PostScript. This returns:
+			# I. Check if the file type is allowed: PDF, Text File or PostScript. This returns:
 			#	1 - Allowed File Type -> Proceed to next step
 			#	2 - Unallowed File Type -> Value error & Display error message
+			#       3 - Text File Type -> Proceed directly to Step III
 			# II. Extract the document -> proceed to next step
 			# III. Check if the document is an academic document and returns:
 			#	"1" - Document is academic -> Proceed to next step
@@ -204,7 +208,12 @@ class FileHandler:
 				web.debug(typeFilterStatus)
 				if typeFilterStatus == 2:
 					raise ValueError
-				txtpath = utilities.pdf2text(pdfpath)
+				elif typeFilterStatus == 1:
+					txtpath = utilities.pdf2text(pdfpath)
+				else:
+					os.rename(pdfpath, pdfpath + ".txt")
+					txtpath = pdfpath + ".txt"
+				web.debug(txtpath)
 				acaFilterStatus = utilities.academicFilter(txtpath)
 				web.debug(acaFilterStatus)
 				if acaFilterStatus == "-1":
@@ -227,7 +236,7 @@ class FileHandler:
 			web.header('Location', location)
 			web.header('Content-Type','text/xml; charset=utf-8') 
 			web.header('Access-Control-Allow-Origin', '*')
-			response = utilities.printXMLLocations(fileid)
+			response = utilities.printXMLLocations(fileid, typeFilterStatus)
 			return response
 		except (IOError, OSError) as ex:
 			web.debug(ex)
@@ -249,7 +258,7 @@ class FileHandler:
 		except (IOError, OSError) as ex:
 			web.debug(ex)
 			return web.internalerror()
-				
+
 
 class PDFStreamHandler:
 	def POST(self):
