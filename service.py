@@ -23,7 +23,8 @@ TMP_FOLDER=tempfile.gettempdir()+"/citeseerextractor/" #Specifies temp folder - 
 
 cgi.maxlen = 5 * 1024 * 1024 # 5MB file size limit for uploads
 
-allowedTypes = set(['application/pdf', 'application/postscript']) # Allowed file types in addition to text files
+allowedTypes = set(['application/pdf']) # Allowed file types in addition to text files. 
+# Note: File types are checked using MIME type definition, such as 'application/postscript'
 
 class Extraction:
 	"""
@@ -51,7 +52,6 @@ class Util:
 	Some utility methods for handling uploads and printing output
 	Errors are caught in the calling classes
 	"""
-
 	def handleUpload(self, inObject):
 		"""
 		Handles upload coming from web.input, write it to a temp file, and return the path to that temp file
@@ -286,18 +286,44 @@ class PDFStreamHandler:
 		
 		try:
 			data = web.data()
-			handler, path = tempfile.mkstemp(dir=TMP_FOLDER)
-			f = open(path,'wb')
+			handler, pdfpath = tempfile.mkstemp(dir=TMP_FOLDER)
+			f = open(pdfpath,'wb')
 			f.write(data)
 			f.close()
-			web.debug(path)
-			txtpath = utilities.pdf2text(path)
-			fileid = os.path.basename(path)
+			web.debug(pdfpath)
+			try:
+				typeFilterStatus = utilities.doFilter(pdfpath)
+				web.debug(typeFilterStatus)
+				if typeFilterStatus == 2:
+					raise ValueError
+				elif typeFilterStatus == 1:
+					txtpath = utilities.pdf2text(pdfpath)
+				else:
+					os.rename(pdfpath, pdfpath + ".txt")
+					txtpath = pdfpath + ".txt"
+				web.debug(txtpath)
+				acaFilterStatus = utilities.academicFilter(txtpath)
+				web.debug(acaFilterStatus)
+				if acaFilterStatus == "-1":
+					raise OSError
+				elif acaFilterStatus == "0":
+					raise ValueError
+			except OSError as ex:
+				web.debug(ex)
+				return web.internalerror()
+			except ValueError as ex:
+				web.debug(ex)
+				if typeFilterStatus == 2:
+					return "Your document failed our academic document filter due to invalid file type"
+				elif acaFilterStatus == "0":
+					return "Your document failed our academic document filter due to not being academic"
+			
+			fileid = os.path.basename(pdfpath)
 			location = web.ctx.homedomain + '/extractor/' + fileid + '/pdf'
 			web.ctx.status = '201 CREATED'
 			web.header('Location', location)
 			web.header('Content-Type','text/xml; charset=utf-8') 
-			response = utilities.printXMLLocations(fileid)
+			response = utilities.printXMLLocations(fileid, typeFilterStatus)
 			return response
 		except (IOError, OSError) as ex:
 			web.debug(ex)
