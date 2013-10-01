@@ -12,8 +12,8 @@ urls = (
 
 '/', 'Index',
 '/extractor', 'FileHandler', # For uploading a file
-'/extractor/pdf', 'PDFStreamHandler', # For uploading a PDF data stream
-'/extractor/(.+)/(header|citations|body|text|pdf)', 'Extractor', # For retrieving file information
+'/extractor/file', 'PDFStreamHandler', # For uploading a PDF data stream
+'/extractor/(.+)/(header|citations|body|text|file)', 'Extractor', # For retrieving file information
 '/extractor/(.+)', 'FileHandler', # For deleting a file
 
 )
@@ -23,7 +23,7 @@ TMP_FOLDER=tempfile.gettempdir()+"/citeseerextractor/" #Specifies temp folder - 
 
 cgi.maxlen = 5 * 1024 * 1024 # 5MB file size limit for uploads
 
-allowedTypes = set(['application/pdf']) # Allowed file types in addition to text files. 
+allowedTypes = set(['application/pdf']) # Allowed file types in addition to text files and PostScript files. 
 # Note: File types are checked using MIME type definition, such as 'application/postscript'
 
 class Extraction:
@@ -70,8 +70,19 @@ class Util:
 		#returns the path of the text file
 		#"""
 		ret = subprocess.call(["java", "-jar", ROOT_FOLDER+"pdfbox/pdfbox-app-1.8.1.jar", "ExtractText", path, path+".txt"])
-		""" Raise an error if text extraction failed"""
+		""" Raise an error if text extraction failed """
 		if ret > 0: 
+			raise IOError
+		return path+".txt"
+		
+	def ps2text(self, path):
+		#"""
+		#calls pdfbox to convert a pdf file into text file. 
+		#returns the path of the text file
+		#"""
+		ret = subprocess.call(["ps2txt", path+".ps", path+".txt"])
+		""" Raise an error if text extraction failed """
+		if ret > 0:
 			raise IOError
 		return path+".txt"
 			
@@ -83,11 +94,13 @@ class Util:
 		fileTypeString = magic.from_file(path, mime=True) # Stores the MIME string that describes the file type
 		web.debug(fileTypeString)
 		if "text" in fileTypeString:
-			docFilter = 3  # Condition of special case: avoid conversion
+			docFilter = 3  # Condition of TXT case: avoid conversion
+		elif fileTypeString == "application/postscript":
+			docFilter = 4  # Condition of PostScript case
 		elif fileTypeString in allowedTypes:
-			docFilter = 1  # Condition of right file Type                 	   
-		else: 
-			docFilter = 2  # Condition of wrong file type 
+			docFilter = 1  # Condition of an allowed file Type
+		else:
+			docFilter = 2  # Condition of an unallowed file type
 		web.debug(docFilter)
 		return docFilter
 
@@ -111,8 +124,8 @@ class Util:
 	def printXMLLocations(self, fileid, typeFilterStatus):
 		"""Returns the URIs for different types of metadata"""
 		response = '<token>' + fileid + '</token>'
-		if typeFilterStatus != 3:
-			response = response + '<pdf>' + web.ctx.homedomain + '/extractor/' + fileid + '/pdf</pdf>\n'
+		if typeFilterStatus != 3:  # Suppresses redundant XML response for text files
+			response = response + '<file>' + web.ctx.homedomain + '/extractor/' + fileid + '/file</file>\n'
 		response = response + '<header>' + web.ctx.homedomain + '/extractor/' + fileid + '/header</header>\n'
 		response = response + '<citations>' + web.ctx.homedomain + '/extractor/' + fileid + '/citations</citations>\n'
 		response = response + '<body>' + web.ctx.homedomain + '/extractor/' + fileid + '/body</body>\n'
@@ -145,9 +158,16 @@ class Extractor:
 				txtfile = TMP_FOLDER + datafile + '.txt'
 				web.header('Content-Type', 'text/text') # Set the Header
 				return open(txtfile,"rb").read()
-			elif method == 'pdf':
+			elif method == 'file':
 				pdffile = TMP_FOLDER + datafile
-				web.header('Content-Type', 'application/pdf') # Set the Header
+				typeFilterStatus = utilities.doFilter(pdffile)
+				if typeFilterStatus == 1:
+					filetype = 'application/pdf'
+				elif typeFilterStatus == 4:
+					filetype = 'application/postscript'		
+				else:
+					filetype = 'text/plain'
+				web.header('Content-Type', filetype) # Set the Header
 				return open(pdffile,"rb").read()
 			else:
 				if method == 'header':
@@ -191,8 +211,11 @@ class FileHandler:
 			# I. Check if the file type is allowed: PDF, Text File or PostScript. This returns:
 			#	1 - Allowed File Type -> Proceed to next step
 			#	2 - Unallowed File Type -> Value error & Display error message
-			#       3 - Text File Type -> Proceed directly to Step III
-			# II. Extract the document -> proceed to next step
+			#	3 - Text File Type -> Proceed directly to Step III
+			#	4 - PostScript Type -> Proceed to next step
+			# II. Extract the document, where if the file type is:
+			#	PDF -> extract text using pdf2text -> proceed to next step
+			#	PostScript -> extract text using ps2text -> proceed to next step
 			# III. Check if the document is an academic document and returns:
 			#	"1" - Document is academic -> Proceed to next step
 			#	"0" - Document is not academic -> Value error & Display error message
@@ -210,6 +233,10 @@ class FileHandler:
 					raise ValueError
 				elif typeFilterStatus == 1:
 					txtpath = utilities.pdf2text(pdfpath)
+				elif typeFilterStatus == 4:
+					os.rename(pdfpath, pdfpath + ".ps")
+					txtpath = utilities.ps2text(pdfpath)
+					os.rename(pdfpath + ".ps", pdfpath)
 				else:
 					os.rename(pdfpath, pdfpath + ".txt")
 					txtpath = pdfpath + ".txt"
@@ -229,7 +256,7 @@ class FileHandler:
 					return "Your document failed our academic document filter due to invalid file type"
 				elif acaFilterStatus == "0":
 					return "Your document failed our academic document filter due to not being academic"
-							
+			
 			fileid = os.path.basename(pdfpath)
 			location = web.ctx.homedomain + '/extractor/pdf/' + fileid
 			web.ctx.status = '201 CREATED'
@@ -298,6 +325,10 @@ class PDFStreamHandler:
 					raise ValueError
 				elif typeFilterStatus == 1:
 					txtpath = utilities.pdf2text(pdfpath)
+				elif typeFilterStatus == 4:
+					os.rename(pdfpath, pdfpath + ".ps")
+					txtpath = utilities.ps2text(pdfpath)
+					os.rename(pdfpath + ".ps", pdfpath)
 				else:
 					os.rename(pdfpath, pdfpath + ".txt")
 					txtpath = pdfpath + ".txt"
@@ -319,10 +350,10 @@ class PDFStreamHandler:
 					return "Your document failed our academic document filter due to not being academic"
 			
 			fileid = os.path.basename(pdfpath)
-			location = web.ctx.homedomain + '/extractor/' + fileid + '/pdf'
+			location = web.ctx.homedomain + '/extractor/' + fileid + '/file'
 			web.ctx.status = '201 CREATED'
 			web.header('Location', location)
-			web.header('Content-Type','text/xml; charset=utf-8') 
+			web.header('Content-Type','text/xml; charset=utf-8')
 			response = utilities.printXMLLocations(fileid, typeFilterStatus)
 			return response
 		except (IOError, OSError) as ex:
@@ -330,7 +361,7 @@ class PDFStreamHandler:
 			return web.internalerror()
 		except ValueError as ex: 
 			web.debug(ex)
-			return "File too large. Limit is ", cgi.maxlen              
+			return "File too large. Limit is ", cgi.maxlen
 
 if __name__ == "__main__":
 
