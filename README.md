@@ -11,12 +11,14 @@ The code is runnable as a stand-alone Web server.
 * web.py python module
 * String::Approx perl module
 * xmltodict (for xml to json conversion)
+* python-magic (magic.py) python module
 
 ### Installation
 1. Get the code
 2. Install web.py `easy_install web.py`
 3. Install String::Approx  `cpan String::Approx`
 4. Install xmltodict `pip install xmltodict`
+5. Install python-magic `pip install python-magic`
 
 #### 64-bit Architectures
 On 64-bit systems you'll need support for 32-bit applications. Please install the appropriate package for your distribution.
