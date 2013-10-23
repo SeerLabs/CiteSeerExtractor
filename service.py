@@ -95,7 +95,7 @@ class Handler(object):	# Super-class for the two handlers
 			#	"1" - Document is academic -> Proceed to next step
 			#	"0" - Document is not academic -> Value error & Display error message
 			#	"-1" - OS error
-			# IV. Form and return XML response (done in the sub-classes)
+			# IV. Form and return XML response
 			
 			typeFilterStatus = utilities.typeFilter(pdfpath)
 			web.debug(typeFilterStatus)
@@ -124,9 +124,9 @@ class Handler(object):	# Super-class for the two handlers
 		except ValueError as ex:
 			web.debug(ex)
 			if typeFilterStatus == "falsetype":
-				return "Your document failed our academic document filter due to invalid file type"
+				return "Your document failed our academic document filter due to invalid file type. Supported types are PDF, PS, and TXT."
 			elif acaFilterStatus == "0":
-				return "Your document failed our academic document filter due to not being academic"
+				return "Your document failed our academic document filter."
 		return typeFilterStatus
 		
 	def printLocations(self, fileid):
