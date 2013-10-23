@@ -24,6 +24,9 @@ TMP_FOLDER=tempfile.gettempdir()+"/citeseerextractor/" #Specifies temp folder - 
 
 cgi.maxlen = 5 * 1024 * 1024 # 5MB file size limit for uploads
 
+global utilities
+utilities = Util()
+	
 class Index:
 	"""Loads the index page from the static dir"""
 	def GET(self):
@@ -37,7 +40,6 @@ class Extractor:
 		params = web.input(output="xml")
 		"""Returns some extracted information from a file"""
 		extractor = Extraction()
-		utilities = Util()
 		data = ''
 		txtfile = TMP_FOLDER + datafile + '.txt'
 		
@@ -80,9 +82,7 @@ class Extractor:
 class Handler(object):	# Super-class for the two handlers
 	
 	def fileCheck(self, pdfpath):
-		
-		utilities = Util()
-	
+			
 		try:
 			# After we handle the file upload, we do the following:
 			# I. Check the uploaded file's type -> proceed to next step
@@ -128,7 +128,7 @@ class Handler(object):	# Super-class for the two handlers
 			elif acaFilterStatus == "0":
 				return "Your document failed our academic document filter due to not being academic"
 		return typeFilterStatus
-					
+						
 class FileHandler(Handler):
 	
 	def GET(self):
@@ -145,7 +145,6 @@ class FileHandler(Handler):
 		"""Actually submits the file"""
 		try:
 			pdffile = web.input(myfile={})
-			utilities = Util()
 			pdfpath = utilities.handleUpload(pdffile)
 			typeFilterStatus = super(FileHandler, self).fileCheck(pdfpath)
 			fileid = os.path.basename(pdfpath)
@@ -182,7 +181,6 @@ class PDFStreamHandler(Handler):
 
 	def POST(self):
 		"""Posts a PDF bytestream"""
-		utilities = Util()
 		content_size = -1
 		
 		# Check for Content-Length header
