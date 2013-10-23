@@ -129,7 +129,15 @@ class Handler(object):	# Super-class for the two handlers
 				return "Your document failed our academic document filter due to not being academic"
 		return typeFilterStatus
 		
-	#def printLocations 
+	def printLocations(self, fileid):
+		location = web.ctx.homedomain + '/extractor/pdf/' + fileid
+		web.ctx.status = '201 CREATED'
+		web.header('Location', location)
+		web.header('Content-Type','text/xml; charset=utf-8') 
+		web.header('Access-Control-Allow-Origin', '*')
+		response = utilities.printXMLLocations(fileid)
+		return response
+	
 					
 class FileHandler(Handler):
 	
@@ -150,13 +158,7 @@ class FileHandler(Handler):
 			pdfpath = utilities.handleUpload(pdffile)
 			super(FileHandler, self).fileCheck(pdfpath)
 			fileid = os.path.basename(pdfpath)
-			location = web.ctx.homedomain + '/extractor/pdf/' + fileid
-			web.ctx.status = '201 CREATED'
-			web.header('Location', location)
-			web.header('Content-Type','text/xml; charset=utf-8') 
-			web.header('Access-Control-Allow-Origin', '*')
-			response = utilities.printXMLLocations(fileid)
-			return response
+			return super(FileHandler, self).printLocations(fileid)
 		except (IOError, OSError) as ex:
 			web.debug(ex)
 			return web.internalerror()
@@ -212,12 +214,7 @@ class PDFStreamHandler(Handler):
 			web.debug(pdfpath)
 			super(FileHandler, self).fileCheck(pdfpath)
 			fileid = os.path.basename(pdfpath)
-			location = web.ctx.homedomain + '/extractor/' + fileid + '/file'
-			web.ctx.status = '201 CREATED'
-			web.header('Location', location)
-			web.header('Content-Type','text/xml; charset=utf-8')
-			response = utilities.printXMLLocations(fileid)
-			return response
+			return super(FileHandler, self).printLocations(fileid)
 		except (IOError, OSError) as ex:
 			web.debug(ex)
 			return web.internalerror()
