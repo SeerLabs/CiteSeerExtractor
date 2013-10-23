@@ -75,11 +75,10 @@ class Util:
 		response = response + "</CSXAPIMetadata>\n"
 		return response
 	
-	def printXMLLocations(self, fileid, typeFilterStatus):
+	def printXMLLocations(self, fileid):
 		"""Returns the URIs for different types of metadata"""
 		response = '<token>' + fileid + '</token>'
-		if not "text" in typeFilterStatus:  # Suppresses redundant XML response for text files
-			response = response + '<file>' + web.ctx.homedomain + '/extractor/' + fileid + '/file</file>\n'
+		response = response + '<file>' + web.ctx.homedomain + '/extractor/' + fileid + '/file</file>\n'
 		response = response + '<header>' + web.ctx.homedomain + '/extractor/' + fileid + '/header</header>\n'
 		response = response + '<citations>' + web.ctx.homedomain + '/extractor/' + fileid + '/citations</citations>\n'
 		response = response + '<body>' + web.ctx.homedomain + '/extractor/' + fileid + '/body</body>\n'
