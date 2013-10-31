@@ -106,7 +106,7 @@ class Handler(object):	# Super-class for the two handlers
 				txtpath = utilities.ps2text(pdfpath)
 				os.rename(pdfpath + ".ps", pdfpath)
 			elif "text" in typeFilterStatus:
-				os.rename(pdfpath, pdfpath + ".txt")
+				shutil.copy(pdfpath, pdfpath + ".txt")
 				txtpath = pdfpath + ".txt"
 			else:
 				typeFilterStatus = "falsetype"
@@ -212,9 +212,9 @@ class PDFStreamHandler(Handler):
 			f.write(data)
 			f.close()
 			web.debug(pdfpath)
-			super(FileHandler, self).fileCheck(pdfpath)
+			super(PDFStreamHandler, self).fileCheck(pdfpath)
 			fileid = os.path.basename(pdfpath)
-			return super(FileHandler, self).printLocations(fileid)
+			return super(PDFStreamHandler, self).printLocations(fileid)
 		except (IOError, OSError) as ex:
 			web.debug(ex)
 			return web.internalerror()
