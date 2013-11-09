@@ -8,6 +8,7 @@ import cgi
 import shutil
 from extraction import Extraction
 from utilities import Util
+from csexredis import CSExRedis
 
 urls = (
 
@@ -26,6 +27,9 @@ cgi.maxlen = 5 * 1024 * 1024 # 5MB file size limit for uploads
 
 global utilities
 utilities = Util()
+
+global csexredis
+csexredis = CSExRedis()
 	
 class Index:
 	"""Loads the index page from the static dir"""
@@ -58,12 +62,26 @@ class Extractor:
 				web.header('Content-Type', typeFilterStatus) # Set the Header
 				return open(pdffile,"rb").read()
 			else:
-				if method == 'header':
-					data = data + extractor.extractHeaders(txtfile)
-				elif method == 'citations':
-					data = data + extractor.extractCitations(txtfile)
-				elif method == 'body':
-					data = data + extractor.extractBody(txtfile)
+				""" Looks for near duplicates in redis database
+				1. Check if near dupe exists
+				2. If one does, check if we have already extracted the metadata and return if we have
+				3. If not, extract the metadata and store """
+				
+				web.debug("Checking redis database for near duplicates")
+				match = csexredis.lookup_add(datafile, txtfile) # Look for near duplicate and add if one doesn't exist
+				have_metadata = None
+				if match is not None: # Near dupe exists
+					have_metadata = csexredis.get_metadata(match, method)
+				if have_metadata is not None:
+					data = have_metadata # Have metadata, return!
+				else: # Either no dupes or don't have metadata
+					if method == 'header':
+						data = data + extractor.extractHeaders(txtfile)
+					elif method == 'citations':
+						data = data + extractor.extractCitations(txtfile)
+					elif method == 'body':
+						data = data + extractor.extractBody(txtfile)
+					csexredis.add_metadata(datafile, method, data) # Add the newly extracted metadata
 				#Print XML or JSON
 				if params.output == 'xml' or params.output == '':
 					web.header('Content-Type','text/xml; charset=utf-8')
@@ -224,10 +242,10 @@ class PDFStreamHandler(Handler):
 
 if __name__ == "__main__":
 
-	if os.path.isdir(TMP_FOLDER): #Create the temp folder
-		shutil.rmtree(TMP_FOLDER)
+	#if os.path.isdir(TMP_FOLDER): #Create the temp folder
+		#shutil.rmtree(TMP_FOLDER)
 		
-	os.mkdir(TMP_FOLDER, 0o700)
+	#os.mkdir(TMP_FOLDER, 0o700)
 		
 	app = web.application(urls, globals()) 
 	app.run()

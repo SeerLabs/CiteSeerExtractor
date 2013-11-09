@@ -8,11 +8,65 @@ r = redis.StrictRedis(host='localhost', port=6379, db=0)
 
 class CSExRedis:
 	
+	def lookup_add(self, token, path):
+		""" When a new document is added, first look up if a similar hash exists and add it if one doesn't """
+		simhash = self.simhash(path)
+		subhashes = self.split_simhash(simhash, 3)
+		r.set(token, simhash)
+		# Look for a match
+		match = self.check_matches(simhash, subhashes)
+		# No match, so add as new record
+		if match is None:
+			for subhash in subhashes:
+				r.sadd(subhash, simhash)
+			return None
+		else:
+			return match
+	
+	def get_metadata(self, simhash, field):
+		""" Returns the metadata for a given hash value """
+		metadata = r.get(str(simhash+"-"+field))
+		return metadata
+	
+	def add_metadata(self, token, field, metadata):
+		""" Adds metadata for a given hash value """
+		key = r.get(token) # Add by hash value, not token
+		r.set(str(key+"-"+field), metadata)
+			
+	def check_matches(self, simhash, subhashes):
+		""" Performs a lookup to see if a similar looking file has been encountered before
+		Method based on (Mankue et al, 2007; Williams & Giles, 2013) """
+		
+		candidates = set([])
+		
+		# Returns a list of candidate similar documents that share a subhash
+		for subhash in subhashes:
+			candidates = candidates.union(r.smembers(subhash))
+		if len(candidates) == 0:
+			return None
+		
+		# Check Hamming distance with each candidate and keep track of the best
+		first = 64
+		best = ""
+		for candidate in candidates:
+			hamming = self.hamming(simhash, candidate)
+			if hamming < first:
+				first = hamming
+				best = candidate
+		# No good match
+		if (first > 3):
+			return None
+		# Best match
+		return best
+		
+	###
+	# This section of code is relevant to simhash calculation
+	###
+	
 	def simhash(self, path):
 		""" Calculates the simhash of a text file """
 		return str(subprocess.check_output(["../icde/simhashc/run_simhash.sh", path]))
 		
-	
 	def split_simhash(self, simhash, k):
 		""" Takes a simhash and splits it into k substrings """
 		subhashes = []
@@ -27,50 +81,17 @@ class CSExRedis:
 		
 		return subhashes
 	
-	def add_token(self, token, simhash, subhashes):
-		r.set(token, simhash)
-		for subhash in subhashes:
-			r.sadd(str(token+"-sh"), subhash)
-	
-	def check_matches(self, token):
-		simhash = r.get(token)
-		subhashes = r.smembers(str(token+"-sh"))
-		candidates = set([])
-		
-		# Returns a list of candidate similar documents that share a subhash
-		for subhash in subhashes:
-			candidates = candidates.union(r.smembers(subhash))
-		if len(candidates) == 0:
-			return 0
-		
-		# Check Hamming distance with each candidate and keep track of the best
-		first = 64
-		best = ""
-		for candidate in candidates:
-			hamming = self.hamming(simhash, candidate)
-			if hamming < first:
-				first = hamming
-				best = candidate
-		# No good match
-		if (first > 3):
-			return 0
-		# Best match
-		return best
-		
-		
 	def hamming(self, str1, str2):
+		""" Returns the hamming distance between two bit strings """
 		return sum(itertools.imap(str.__ne__, str1, str2))
 
 	
 if  __name__ =='__main__':
 	
 	CSExRedis = CSExRedis()
-	#print str(sys.argv[1])
+	print CSExRedis.lookup(sys.argv[2], sys.argv[1])
 	simhash = CSExRedis.simhash(sys.argv[1])
 	print simhash
 	subhashes = CSExRedis.split_simhash(simhash, 3)
-	token = sys.argv[2]
-	CSExRedis.add_token(token, simhash, subhashes)
-	print CSExRedis.check_matches(token)
-	
+	print subhashes
 	
