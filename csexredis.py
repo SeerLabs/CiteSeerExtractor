@@ -65,7 +65,7 @@ class CSExRedis:
 	
 	def simhash(self, path):
 		""" Calculates the simhash of a text file """
-		return str(subprocess.check_output(["../icde/simhashc/run_simhash.sh", path]))
+		return str(subprocess.check_output(["simhashc/run_simhash.sh", path]))
 		
 	def split_simhash(self, simhash, k):
 		""" Takes a simhash and splits it into k substrings """

@@ -1,1 +1,6 @@
 *~
+*.pyc
+*.kdev4
+simhashc/stem
+simhashc/charikar
+simhashc/*.stem
