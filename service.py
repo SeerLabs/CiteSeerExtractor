@@ -71,6 +71,7 @@ class Extractor:
 				match = csexredis.lookup_add(datafile, txtfile) # Look for near duplicate and add if one doesn't exist
 				have_metadata = None
 				if match is not None: # Near dupe exists
+					print "Found!"
 					have_metadata = csexredis.get_metadata(match, method)
 				if have_metadata is not None:
 					data = have_metadata # Have metadata, return!
@@ -123,12 +124,15 @@ class Handler(object):	# Super-class for the two handlers
 				os.rename(pdfpath, pdfpath + ".ps")
 				txtpath = utilities.ps2text(pdfpath)
 				os.rename(pdfpath + ".ps", pdfpath)
-			elif "text" in typeFilterStatus:
+			#elif "text" in typeFilterStatus:
+			#	shutil.copy(pdfpath, pdfpath + ".txt")
+			#	txtpath = pdfpath + ".txt"
+			#else:
+			#	typeFilterStatus = "falsetype"
+			#	raise ValueError
+			else:
 				shutil.copy(pdfpath, pdfpath + ".txt")
 				txtpath = pdfpath + ".txt"
-			else:
-				typeFilterStatus = "falsetype"
-				raise ValueError
 			web.debug(txtpath)
 			acaFilterStatus = utilities.academicFilter(txtpath)
 			web.debug(acaFilterStatus)
