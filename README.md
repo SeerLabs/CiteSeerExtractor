@@ -12,6 +12,7 @@ The code is runnable as a stand-alone Web server.
 * String::Approx perl module
 * xmltodict (for xml to json conversion)
 * python-magic (magic.py) python module
+* redis
 
 ### Installation
 1. Get the code
@@ -19,6 +20,8 @@ The code is runnable as a stand-alone Web server.
 3. Install String::Approx  `cpan String::Approx`
 4. Install xmltodict `pip install xmltodict`
 5. Install python-magic `pip install python-magic`
+6. Install python-redis `pip install redis`
+7. Start a redis server
 
 #### 64-bit Architectures
 On 64-bit systems you'll need support for 32-bit applications. Please install the appropriate package for your distribution.
