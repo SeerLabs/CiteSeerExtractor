@@ -99,7 +99,7 @@ class Handler(object):	# Super-class for the two handlers
 			
 			typeFilterStatus = utilities.typeFilter(pdfpath)
 			web.debug(typeFilterStatus)
-			if typeFilterStatus == "application/pdf":
+			if typeFilterStatus == "application/octet-stream":
 				txtpath = utilities.pdf2text(pdfpath)
 			elif typeFilterStatus == "application/postscript":
 				os.rename(pdfpath, pdfpath + ".ps")
@@ -123,11 +123,12 @@ class Handler(object):	# Super-class for the two handlers
 			return web.internalerror()
 		except ValueError as ex:
 			web.debug(ex)
+			print typeFilterStatus
 			if typeFilterStatus == "falsetype":
-				return "Your document failed our academic document filter due to invalid file type. Supported types are PDF, PS, and TXT."
+				return False, "Your document failed our academic document filter due to invalid file type. Supported types are PDF, PS, and TXT."
 			elif acaFilterStatus == "0":
-				return "Your document failed our academic document filter."
-		return typeFilterStatus
+				return False, "Your document failed our academic document filter."
+		return True, typeFilterStatus
 		
 	def printLocations(self, fileid):
 		location = web.ctx.homedomain + '/extractor/pdf/' + fileid
@@ -156,14 +157,20 @@ class FileHandler(Handler):
 		try:
 			pdffile = web.input(myfile={})
 			pdfpath = utilities.handleUpload(pdffile)
-			super(FileHandler, self).fileCheck(pdfpath)
-			fileid = os.path.basename(pdfpath)
-			return super(FileHandler, self).printLocations(fileid)
+			passed, message = super(FileHandler, self).fileCheck(pdfpath)
+			if passed is False:
+				web.ctx.status = '400'
+				return message
+			else:
+				fileid = os.path.basename(pdfpath)
+				return super(FileHandler, self).printLocations(fileid)
 		except (IOError, OSError) as ex:
 			web.debug(ex)
+			web.ctx.status = '500'
 			return web.internalerror()
 		except ValueError as ex:
 			web.debug(ex)
+			web.ctx.status = '400'
 			return "File too large. Limit is ", cgi.maxlen    
 
 	def DELETE(self,fileid):
@@ -197,12 +204,14 @@ class PDFStreamHandler(Handler):
 				raise ValueError
 		except ValueError as ex:
 			web.debug(ex)
+			web.ctx.status = '400'
 			return "File too large. Limit is ", cgi.maxlen              
 		try:
 			if content_size == 0: #No Content-Length header
 				raise ValueError
 		except ValueError as ex:
 			web.debug(ex)
+			web.ctx.status = '400'
 			return "Please set Content-Length header for bytestream upload"
 		
 		try:
@@ -212,16 +221,18 @@ class PDFStreamHandler(Handler):
 			f.write(data)
 			f.close()
 			web.debug(pdfpath)
-			super(PDFStreamHandler, self).fileCheck(pdfpath)
-			fileid = os.path.basename(pdfpath)
-			return super(PDFStreamHandler, self).printLocations(fileid)
+			passed, message = super(PDFStreamHandler, self).fileCheck(pdfpath)
+			if passed is False:
+				web.ctx.status = '400'
+				return message
+			else:
+				fileid = os.path.basename(pdfpath)
+				return super(PDFStreamHandler, self).printLocations(fileid)
 		except (IOError, OSError) as ex:
 			web.debug(ex)
+			web.ctx.status = '500'
 			return web.internalerror()
-		except ValueError as ex: 
-			web.debug(ex)
-			return "File too large. Limit is ", cgi.maxlen
-
+		
 if __name__ == "__main__":
 
 	if os.path.isdir(TMP_FOLDER): #Create the temp folder
