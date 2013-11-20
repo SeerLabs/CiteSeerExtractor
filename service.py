@@ -99,7 +99,7 @@ class Handler(object):	# Super-class for the two handlers
 			
 			typeFilterStatus = utilities.typeFilter(pdfpath)
 			web.debug(typeFilterStatus)
-			if typeFilterStatus == "application/octet-stream":
+			if typeFilterStatus == "application/pdf":
 				txtpath = utilities.pdf2text(pdfpath)
 			elif typeFilterStatus == "application/postscript":
 				os.rename(pdfpath, pdfpath + ".ps")
