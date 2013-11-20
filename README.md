@@ -8,6 +8,7 @@ The code is runnable as a stand-alone Web server.
 
 ### Dependencies
 * Python 2.7
+* Java 6
 * web.py python module
 * String::Approx perl module
 * xmltodict (for xml to json conversion)
@@ -15,7 +16,7 @@ The code is runnable as a stand-alone Web server.
 
 ### Installation
 1. Get the code
-2. Install web.py `easy_install web.py`
+2. Install web.py `pip install web.py`
 3. Install String::Approx  `cpan String::Approx`
 4. Install xmltodict `pip install xmltodict`
 5. Install python-magic `pip install python-magic`
@@ -28,5 +29,5 @@ Ubuntu: `sudo apt-get install ia32-libs-multiarch`
 RHEL/CentOS: `sudo yum install glibc.i686 libstdc++.i686`
 
 ### Run
-`python service.py [port]` and navigate to http://localhost:port and follow the instructions for different types of extraction
+`python service.py [port]` and navigate to http://localhost:port/extractor and follow the instructions for different types of extraction
 
