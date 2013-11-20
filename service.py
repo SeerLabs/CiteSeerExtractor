@@ -73,6 +73,7 @@ class Extractor:
 					web.header('Content-Type','text/json; charset=utf-8') 	
 					return json.dumps(jsondata)
 				else:
+					web.ctx.status = '400'
 					return 'Unsupported output format. Options are: "xml" (default) and "json"'
 		
 		except (IOError, OSError) as er: #Internal error, i.e. during extraction
