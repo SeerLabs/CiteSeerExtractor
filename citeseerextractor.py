@@ -18,80 +18,135 @@
 """
 
 """
-	This is a wrapper around the CiteSeerExtractor. 
+	This is a client for the CiteSeerExtractor. 
 	It can easily be used to retrieve various parts of a PDF without needing to worry about HTTP and XML handling.
+	
+	Generally the methods return 2 values: a Boolean value detailing whether the method succeeded and a message
+	When the method succeeded, the message will contain the requested data and when the method fails it will return a messag explaining why (or should at least)
+	Example: pass, value = citeseerextractor.getSomething('token')
+	Check to make sure pass is true before proceeding
 """
 
 import cgi, cgitb
 import sys
 import requests
-import xml.dom.minidom
+import xml.etree.ElementTree as ET
 import re
 import subprocess
 from django.utils.encoding import smart_str, smart_unicode
 
 class CiteSeerExtractor:
 	
-	global url
-	url = 'http://citeseerextractor.ist.psu.edu:8080/extractor'
-		
+	def __init__(self, url):	
+		self.url = url
+	
 	def postPDF(self, pdf):
-		files = {'myfile': open(pdf, 'rb')}
-		r = requests.post(url, files=files)
+		with open (pdf, 'rb') as f:
+			r = requests.post(str(self.url + '/file'), data=f)
 		if r.status_code == 201:
-			dom = xml.dom.minidom.parseString(r.content)
-			tokenXML = dom.getElementsByTagName('pdf')[0].firstChild.nodeValue
-			m = re.search('(?<=extractor\/)\w+',tokenXML)
-			return m.group()
+			root = ET.fromstring(smart_str(r.content))
+			token = root.find('token').text
+			return True, token
 		else:
-			return -1;
+			return False, r.content
 	
 	def getXMLTag(self, token, resource, tag):
-		r = requests.get(url + '/' + token + '/' + resource)
-		dom = xml.dom.minidom.parseString(smart_str(r.content))
-		tagContents = dom.getElementsByTagName(tag)
-		return tagContents
+		r = requests.get(self.url + '/' + token + '/' + resource)
+		if r.status_code == 200:
+			root = ET.fromstring(smart_str(r.content))
+			if tag is '/':
+				return True, root
+			tagContents = root.findall(tag)
+			return True, tagContents
+		else:
+			return False, r.content
 	
-	def getHeaderTag(self, token, tag):
-		return self.getXMLTag(token, 'header', tag)
+	def getHeaderAsXMLString(self, token):
+		passed, header = self.getXMLTag(token, 'header', '/')
+		if passed is False:
+			return False, header
+		return True, ET.tostring(header)
+		
+	def getCitationsAsXMLString(self, token):
+		passed, header = self.getXMLTag(token, 'citations', '/')
+		if passed is False:
+			return False, header
+		return True, ET.tostring(header)
 		
 	def getAuthorNames(self, token):
-		authorsXML = self.getHeaderTag(token, 'name')
+		print token
+		passed, authorsXML = self.getXMLTag(token, 'header', 'algorithm/authors/author/name')
+		if passed is False:
+			return False, authorsXML
 		authorList = ''
 		authNo = 0
 		for node in authorsXML:
 			authNo += 1
-			authorList += node.firstChild.nodeValue
+			authorList += node.text
 			if authNo < len(authorsXML)-1:
 				authorList += ", "
 			elif authNo == len(authorsXML)-1:
 				authorList += " and "
-		return authorList
+		return True, authorList
 		
 	def getTitle(self, token):
-		titleXML = self.getHeaderTag(token, 'title')
-		return titleXML[0].firstChild.nodeValue
+		passed, titleXML = self.getXMLTag(token, 'header', 'algorithm/title')
+		if passed is False:
+			return False, titleXML
+		return True, titleXML[0].text
 		
 	def getBodyText(self, token):
-		bodyXML = self.getXMLTag(token, 'body', 'body')
-		return bodyXML[0].firstChild.nodeValue
+		passed, bodyXML = self.getXMLTag(token, 'body', 'body')
+		if passed is False:
+			return False, bodyXML
+		return True, bodyXML[0].text
 
 if  __name__ =='__main__':
 	
-	csex = CiteSeerExtractor()
-	form = cgi.FieldStorage()
-	filename = form.getvalue('filename')
+	#"""
+	#Here are some examples of how the code can be used
+	#"""
+	
+	## To post a PDF use the postPDF method with a string containing the location of the PDF on the filesystem
+	## A 'token' will be returned that can then be used to retrieve various aspects of the PDF, i.e. authors, title, body, etc.
+	
+	#Create a CiteSeerExtractor object - sys.argv[1] is the URL
+	csex = CiteSeerExtractor(sys.argv[1]) 
+	
+	#Post the PDF
+	passed, message = csex.postPDF(sys.argv[2])
+	if passed is True:
+		print "File successfully created, your token is " + str(message)
+	else:
+		print "Post failed"
+		print message
+		sys.exit(0)
+	token = message	
+	
+	#Get authors
+	passed, message = csex.getAuthorNames(token)
+	if passed is True:
+		print message
+	else:
+		print "Failed to get authors"
+		print message
+		sys.exit(0)
 		
-	"""
-	Here are some examples of how the code can be used
-	"""
+	#Get title
+	passed, message = csex.getTitle(token)
+	if passed is True:
+		print message
+	else:
+		print "Failed to get title"
+		print message
+		sys.exit(0)
 	
-	# To post a PDF use the postPDF method with a string containing the location of the PDF on the filesystem
-	# A 'token' will be returned that can then be used to retrieve various aspects of the PDF, i.e. authors, title, body, etc.
-	
-	token = csex.postPDF(filename)
-	print "Content-Type: text/html\n"
-	print csex.getAuthorNames(token)
-	print csex.getTitle(token)
-	print csex.getBodyText(token)
-	
+	#Get header as XML
+	passed, message = csex.getHeaderAsXMLString(token)
+	if passed is True:
+		print message
+	else:
+		print "Failed to get header metadata"
+		print message
+		sys.exit(0)
+		
