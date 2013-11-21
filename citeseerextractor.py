@@ -43,7 +43,6 @@ class CiteSeerExtractor:
 	def postPDF(self, pdf):
 		with open (pdf, 'rb') as f:
 			r = requests.post(str(self.url + '/file'), data=f)
-		print r.status_code
 		if r.status_code == 201:
 			root = ET.fromstring(smart_str(r.content))
 			token = root.find('token').text

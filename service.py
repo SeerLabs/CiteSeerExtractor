@@ -124,7 +124,6 @@ class Handler(object):	# Super-class for the two handlers
 			return web.internalerror()
 		except ValueError as ex:
 			web.debug(ex)
-			print typeFilterStatus
 			if typeFilterStatus == "falsetype":
 				return False, "Your document failed our academic document filter due to invalid file type. Supported types are PDF, PS, and TXT."
 			elif acaFilterStatus == "0":
@@ -217,10 +216,9 @@ class PDFStreamHandler(Handler):
 		
 		try:
 			data = web.data()
-			handler, pdfpath = tempfile.mkstemp(dir=TMP_FOLDER)
-			f = open(pdfpath,'wb')
-			f.write(data)
-			f.close()
+			with tempfile.NamedTemporaryFile('wb',dir=TMP_FOLDER,delete=False) as f:
+				f.write(data)
+				pdfpath = os.path.abspath(f.name)
 			web.debug(pdfpath)
 			passed, message = super(PDFStreamHandler, self).fileCheck(pdfpath)
 			if passed is False:
