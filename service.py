@@ -92,6 +92,7 @@ class Extractor:
 					web.header('Content-Type','text/json; charset=utf-8') 	
 					return json.dumps(jsondata)
 				else:
+					web.ctx.status = '400'
 					return 'Unsupported output format. Options are: "xml" (default) and "json"'
 		
 		except (IOError, OSError) as er: #Internal error, i.e. during extraction
@@ -124,15 +125,12 @@ class Handler(object):	# Super-class for the two handlers
 				os.rename(pdfpath, pdfpath + ".ps")
 				txtpath = utilities.ps2text(pdfpath)
 				os.rename(pdfpath + ".ps", pdfpath)
-			#elif "text" in typeFilterStatus:
-			#	shutil.copy(pdfpath, pdfpath + ".txt")
-			#	txtpath = pdfpath + ".txt"
-			#else:
-			#	typeFilterStatus = "falsetype"
-			#	raise ValueError
-			else:
+			elif "text" in typeFilterStatus:
 				shutil.copy(pdfpath, pdfpath + ".txt")
 				txtpath = pdfpath + ".txt"
+			else:
+				typeFilterStatus = "falsetype"
+				raise ValueError
 			web.debug(txtpath)
 			acaFilterStatus = utilities.academicFilter(txtpath)
 			web.debug(acaFilterStatus)
@@ -146,10 +144,10 @@ class Handler(object):	# Super-class for the two handlers
 		except ValueError as ex:
 			web.debug(ex)
 			if typeFilterStatus == "falsetype":
-				return "Your document failed our academic document filter due to invalid file type. Supported types are PDF, PS, and TXT."
+				return False, "Your document failed our academic document filter due to invalid file type. Supported types are PDF, PS, and TXT."
 			elif acaFilterStatus == "0":
-				return "Your document failed our academic document filter."
-		return typeFilterStatus
+				return False, "Your document failed our academic document filter."
+		return True, typeFilterStatus
 		
 	def printLocations(self, fileid):
 		location = web.ctx.homedomain + '/extractor/pdf/' + fileid
@@ -178,14 +176,20 @@ class FileHandler(Handler):
 		try:
 			pdffile = web.input(myfile={})
 			pdfpath = utilities.handleUpload(pdffile)
-			super(FileHandler, self).fileCheck(pdfpath)
-			fileid = os.path.basename(pdfpath)
-			return super(FileHandler, self).printLocations(fileid)
+			passed, message = super(FileHandler, self).fileCheck(pdfpath)
+			if passed is False:
+				web.ctx.status = '400'
+				return message
+			else:
+				fileid = os.path.basename(pdfpath)
+				return super(FileHandler, self).printLocations(fileid)
 		except (IOError, OSError) as ex:
 			web.debug(ex)
+			web.ctx.status = '500'
 			return web.internalerror()
 		except ValueError as ex:
 			web.debug(ex)
+			web.ctx.status = '400'
 			return "File too large. Limit is ", cgi.maxlen    
 
 	def DELETE(self,fileid):
@@ -219,37 +223,40 @@ class PDFStreamHandler(Handler):
 				raise ValueError
 		except ValueError as ex:
 			web.debug(ex)
+			web.ctx.status = '400'
 			return "File too large. Limit is ", cgi.maxlen              
 		try:
 			if content_size == 0: #No Content-Length header
 				raise ValueError
 		except ValueError as ex:
 			web.debug(ex)
+			web.ctx.status = '400'
 			return "Please set Content-Length header for bytestream upload"
 		
 		try:
 			data = web.data()
-			handler, pdfpath = tempfile.mkstemp(dir=TMP_FOLDER)
-			f = open(pdfpath,'wb')
-			f.write(data)
-			f.close()
+			with tempfile.NamedTemporaryFile('wb',dir=TMP_FOLDER,delete=False) as f:
+				f.write(data)
+				pdfpath = os.path.abspath(f.name)
 			web.debug(pdfpath)
-			super(PDFStreamHandler, self).fileCheck(pdfpath)
-			fileid = os.path.basename(pdfpath)
-			return super(PDFStreamHandler, self).printLocations(fileid)
+			passed, message = super(PDFStreamHandler, self).fileCheck(pdfpath)
+			if passed is False:
+				web.ctx.status = '400'
+				return message
+			else:
+				fileid = os.path.basename(pdfpath)
+				return super(PDFStreamHandler, self).printLocations(fileid)
 		except (IOError, OSError) as ex:
 			web.debug(ex)
+			web.ctx.status = '500'
 			return web.internalerror()
-		except ValueError as ex: 
-			web.debug(ex)
-			return "File too large. Limit is ", cgi.maxlen
-
+		
 if __name__ == "__main__":
 
-	#if os.path.isdir(TMP_FOLDER): #Create the temp folder
-		#shutil.rmtree(TMP_FOLDER)
+	if os.path.isdir(TMP_FOLDER): #Create the temp folder
+		shutil.rmtree(TMP_FOLDER)
 		
-	#os.mkdir(TMP_FOLDER, 0o700)
+	os.mkdir(TMP_FOLDER, 0o700)
 		
 	app = web.application(urls, globals()) 
 	app.run()
