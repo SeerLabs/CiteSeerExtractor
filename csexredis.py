@@ -8,9 +8,8 @@ r = redis.StrictRedis(host='localhost', port=6379, db=0)
 
 class CSExRedis:
 	
-	def lookup_add(self, token, path):
+	def lookup_add(self, token, simhash):
 		""" When a new document is added, first look up if a similar hash exists and add it if one doesn't """
-		simhash = self.simhash(path)
 		subhashes = self.split_simhash(simhash, 3)
 		r.set(token, simhash)
 		# Look for a match
@@ -21,7 +20,10 @@ class CSExRedis:
 				r.sadd(subhash, simhash)
 			return None
 		else:
-			return match
+			if len(match) is 64:
+				return match
+			else:
+				return None
 	
 	def get_metadata(self, simhash, field):
 		""" Returns the metadata for a given hash value """
