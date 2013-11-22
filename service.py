@@ -63,26 +63,35 @@ class Extractor:
 				return open(pdffile,"rb").read()
 			else:
 				""" Looks for near duplicates in redis database
+				First check if we have exact metadata. If not, do the following
 				1. Check if near dupe exists
 				2. If one does, check if we have already extracted the metadata and return if we have
 				3. If not, extract the metadata and store """
 				
-				web.debug("Checking redis database for near duplicates")
-				match = csexredis.lookup_add(datafile, txtfile) # Look for near duplicate and add if one doesn't exist
-				have_metadata = None
-				if match is not None: # Near dupe exists
-					print "Found!"
-					have_metadata = csexredis.get_metadata(match, method)
-				if have_metadata is not None:
-					data = have_metadata # Have metadata, return!
-				else: # Either no dupes or don't have metadata
-					if method == 'header':
-						data = data + extractor.extractHeaders(txtfile)
-					elif method == 'citations':
-						data = data + extractor.extractCitations(txtfile)
-					elif method == 'body':
-						data = data + extractor.extractBody(txtfile)
-					csexredis.add_metadata(datafile, method, data) # Add the newly extracted metadata
+				simhash = csexredis.simhash(txtfile)
+				exact_metadata = csexredis.get_metadata(simhash, method)
+				if exact_metadata is not None: #Check if we have the exact thing stored already
+					print "I have the exact metadata, returning!"
+					data = exact_metadata
+				else:
+					web.debug("Checking redis database for near duplicates")
+					match = csexredis.lookup_add(datafile, simhash) # Look for near duplicate and add if one doesn't exist
+					have_metadata = None
+					if match is not None: # Near dupe exists
+						print "Found! Now checking for " + method + " metadata"
+						have_metadata = csexredis.get_metadata(match, method)
+					if have_metadata is not None:
+						print "Found...no need to extract"
+						data = have_metadata # Have metadata, return!
+					else: # Either no dupes or don't have metadata
+						print "Not found...extracting"
+						if method == 'header':
+							data = data + extractor.extractHeaders(txtfile)
+						elif method == 'citations':
+							data = data + extractor.extractCitations(txtfile)
+						elif method == 'body':
+							data = data + extractor.extractBody(txtfile)
+						csexredis.add_metadata(datafile, method, data) # Add the newly extracted metadata
 				#Print XML or JSON
 				if params.output == 'xml' or params.output == '':
 					web.header('Content-Type','text/xml; charset=utf-8')

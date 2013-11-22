@@ -150,3 +150,12 @@ if  __name__ =='__main__':
 		print message
 		sys.exit(0)
 		
+		#Get header as XML
+	passed, message = csex.getCitationsAsXMLString(token)
+	if passed is True:
+		print message
+	else:
+		print "Failed to get citation metadata"
+		print message
+		sys.exit(0)
+		
