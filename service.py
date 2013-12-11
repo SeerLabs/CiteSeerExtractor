@@ -142,6 +142,10 @@ class Handler(object):	# Super-class for the two handlers
 				typeFilterStatus = "falsetype"
 				raise ValueError
 			web.debug(txtpath)
+			sizeFilter = utilities.fileSizeFilter(txtpath)
+			print sizeFilter
+			if sizeFilter < 100:
+				raise ValueError
 			acaFilterStatus = utilities.academicFilter(txtpath)
 			web.debug(acaFilterStatus)
 			if acaFilterStatus == "-1":
@@ -153,6 +157,8 @@ class Handler(object):	# Super-class for the two handlers
 			return web.internalerror()
 		except ValueError as ex:
 			web.debug(ex)
+			if sizeFilter < 100:
+				return False, "File is too small"
 			if typeFilterStatus == "falsetype":
 				return False, "Your document failed our academic document filter due to invalid file type. Supported types are PDF, PS, and TXT."
 			elif acaFilterStatus == "0":

@@ -57,7 +57,13 @@ class Util:
 		fileTypeString = magic.from_file(path, mime=True) # Stores the MIME string that describes the file type
 		web.debug(fileTypeString)
 		return fileTypeString
-
+	
+	def fileSizeFilter(self, path):
+		""" Check the file size """
+		with open(path, 'r') as f:
+			data=f.read().replace('\n', '')
+		return len(data.split(' '))
+	
 	def academicFilter(self, path): 
 		"""
 		Pass in txtpath here, only tells if document is academic or not
