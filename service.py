@@ -69,6 +69,7 @@ class Extractor:
 				3. If not, extract the metadata and store """
 				
 				simhash = csexredis.simhash(txtfile)
+				print simhash
 				exact_metadata = csexredis.get_metadata(simhash, method)
 				if exact_metadata is not None: #Check if we have the exact thing stored already
 					print "I have the exact metadata, returning!"
