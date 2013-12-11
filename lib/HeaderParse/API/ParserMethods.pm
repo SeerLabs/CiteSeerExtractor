@@ -26,8 +26,6 @@ my $TestH;
 my $TrainH;
 my $TotalHea = 0;
 
-my $timestamp;
-
 my $learner = "${SVM_Dir}svm_learn";
 my $Classifier = "${SVM_Dir}svm_classify";
 

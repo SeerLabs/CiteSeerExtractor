@@ -10,31 +10,38 @@ from citeseerextractor import CiteSeerExtractor
 
 csex = CiteSeerExtractor('http://localhost:8081/extractor')
 
+API_HEADER_TAG='CSXAPIMetadata'
+
 number=1
 text_file = open(sys.argv[1], "r")
 lines = text_file.readlines()
 for line in lines:
     line = line.rstrip()
-    print str(number) + ' ' + line
-    number = number+1
     passed, message = csex.postPDF(line)
     if passed is True:
         token = message
         passed, message = csex.getHeaderAsXMLString(token)
         if passed is True:
+            if API_HEADER_TAG not in message:
+                print line + ' Error in header validation'
+                continue
             passed, message = csex.getCitationsAsXMLString(token)
             if passed is True:
-                print 'PASS'
+                if API_HEADER_TAG not in message:
+                    print line + ' Error in citation validation'
+                    continue
+                print str(number) + ' ' + line + ' PASS'
+                number = number+1
             else:
-                print 'Error getting citations'
+                print line + ' Error getting citations'
                 print message
                 continue
         else:
-            print 'Error getting header'
+            print line + ' Error getting header'
             print message
             continue
     else:
-        print 'Error posting'
+        print line + ' Error posting'
         print message
         continue
     sys.stdout.flush()
