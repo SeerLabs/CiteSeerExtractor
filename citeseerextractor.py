@@ -100,6 +100,13 @@ class CiteSeerExtractor:
 		if passed is False:
 			return False, bodyXML
 		return True, bodyXML[0].text
+	
+	def delete(self, token):
+		r = requests.delete(str(self.url + '/' + token))
+		if r.status_code == 200:
+			return True
+		else:
+			return False
 
 if  __name__ =='__main__':
 	
@@ -158,4 +165,7 @@ if  __name__ =='__main__':
 		print "Failed to get citation metadata"
 		print message
 		sys.exit(0)
+		
+	delStatus = csex.delete(token)
+	print delStatus
 		
