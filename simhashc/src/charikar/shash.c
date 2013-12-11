@@ -13,11 +13,26 @@
 #include <unistd.h>
 #include <getopt.h>
 #include <stdbool.h>
-
 #include "simi.h"
 #include "simiw.h"
 
+std::string binary(uint64_t n )
+{
+  char     result[ (sizeof(uint64_t) * 8) + 1 ];
+  unsigned index  = sizeof(uint64_t) * 8;
+  result[ index ] = '\0';
 
+  do result[ --index ] = '0' + (n & 1);
+  while (n >>= 1);
+
+	std::string bithash = result + index;
+	while(bithash.length() < 64){
+		bithash = "0" + bithash;
+	}
+	return bithash;
+
+}
+  
 void print_binary(uint64_t n) {
     if (n == 0 || n ==1) 
         std::cout << n;
@@ -148,8 +163,7 @@ main( int argc, char **argv)
 			: charikar_hash64_wide( data, data_length, stoken_size); /* Fast version */
 		free( data);
 		if (!quiet)
-			print_binary(hash1);
-		//printf( " %s\n", argv[ c]);
+			std::cout << std::endl << binary(hash1);
                         
 	}
 
