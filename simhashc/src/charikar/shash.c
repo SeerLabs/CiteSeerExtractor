@@ -163,7 +163,7 @@ main( int argc, char **argv)
 			: charikar_hash64_wide( data, data_length, stoken_size); /* Fast version */
 		free( data);
 		if (!quiet)
-			std::cout << std::endl << binary(hash1);
+			std::cout << binary(hash1);
                         
 	}
 
