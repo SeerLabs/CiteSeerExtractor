@@ -8,34 +8,42 @@ import sys
 import time
 from citeseerextractor import CiteSeerExtractor
 
+if int(sys.argv[2])%1000 == 0 or int(sys.argv[2]) == 1:
+    with open('times.txt', 'a') as f:
+        f.write(sys.argv[2] + ' ' + str(time.time()))
+        f.write('\n')
+
 csex = CiteSeerExtractor('http://localhost:8081/extractor')
 
-API_HEADER_TAG='CSXAPIMetadata'
+API_HEADER_TAG='SVM HeaderParse'
+API_CITATION_TAG='citationList'
 
 f = sys.argv[1]
+print f
 passed, message = csex.postPDF(f)
 if passed is True:
     token = message
     passed, message = csex.getHeaderAsXMLString(token)
     if passed is True:
         if API_HEADER_TAG not in message:
-            print f + ' Error in header validation'
+            print 'Error in header validation'
             sys.exit()
         passed, message = csex.getCitationsAsXMLString(token)
         if passed is True:
-            if API_HEADER_TAG not in message:
-                print f + ' Error in citation validation'
+            if API_CITATION_TAG not in message:
+                print 'Error in citation validation'
                 sys.exit()
-            print sys.argv[2] + ' ' + f + ' PASS'
+            print sys.argv[2] + ' PASS'
+            csex.delete(token)
         else:
-            print f + ' Error getting citations'
+            print 'Error getting citations'
             print message
             sys.exit()
     else:
-        print f + ' Error getting header'
+        print 'Error getting header'
         print message
         sys.exit()
 else:
-    print f + ' Error posting'
+    print 'Error posting'
     print message
 
