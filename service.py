@@ -157,11 +157,14 @@ class Handler(object):	# Super-class for the two handlers
 			return web.internalerror()
 		except ValueError as ex:
 			web.debug(ex)
-			if sizeFilter < 100:
-				return False, "File is too small"
 			if typeFilterStatus == "falsetype":
+				web.debug("Bad file type")
 				return False, "Your document failed our academic document filter due to invalid file type. Supported types are PDF, PS, and TXT."
+			elif sizeFilter < 100:
+				web.debug("File too small")
+				return False, "File is too small"
 			elif acaFilterStatus == "0":
+				web.debug("Non-academic")
 				return False, "Your document failed our academic document filter."
 		return True, typeFilterStatus
 		
