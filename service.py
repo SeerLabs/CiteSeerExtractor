@@ -6,6 +6,7 @@ import xmltodict
 import json
 import cgi
 import shutil
+import zlib
 from extraction import Extraction
 from utilities import Util
 from csexredis import CSExRedis
@@ -92,13 +93,18 @@ class Extractor:
 							data = data + extractor.extractCitations(txtfile)
 						elif method == 'body':
 							data = data + extractor.extractBody(txtfile)
-						csexredis.add_metadata(datafile, method, data) # Add the newly extracted metadata
+						com_data = zlib.compress(data, 3)
+						data = com_data
+						if method == 'citations':
+							csexredis.add_metadata(datafile, method, data, 21600) # Add the newly extracted metadata
+						else:
+							csexredis.add_metadata(datafile, method, data)
 				#Print XML or JSON
 				if params.output == 'xml' or params.output == '':
 					web.header('Content-Type','text/xml; charset=utf-8')
-					return utilities.printXML(data)
+					return utilities.printXML(zlib.decompress(data))
 				elif params.output == 'json':
-					jsondata = xmltodict.parse(data)
+					jsondata = xmltodict.parse(zlib.decompress(data))
 					web.header('Content-Type','text/json; charset=utf-8') 	
 					return json.dumps(jsondata)
 				else:

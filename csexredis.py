@@ -30,10 +30,13 @@ class CSExRedis:
 		metadata = r.get(str(simhash+"-"+field))
 		return metadata
 	
-	def add_metadata(self, token, field, metadata):
+	def add_metadata(self, token, field, metadata, expire=None):
 		""" Adds metadata for a given hash value """
 		key = r.get(token) # Add by hash value, not token
-		r.set(str(key+"-"+field), metadata)
+		if expire is None:
+			r.set(str(key+"-"+field), metadata)
+		else:
+			r.setex(str(key+"-"+field), expire, metadata)
 			
 	def check_matches(self, simhash, subhashes):
 		""" Performs a lookup to see if a similar looking file has been encountered before
