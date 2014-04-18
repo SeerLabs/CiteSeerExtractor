@@ -62,9 +62,9 @@
             
             <tr><td>POST</td><td>/</td><td>Uploads a new PDF document via a form</td><td>XML document with URIs to resource, <i>resource_id</i></td><td>myfile=@filename</td></tr>
             
-            <tr><td>POST</td><td>/pdf</td><td>Uploads a new PDF document via bytestream</td><td>XML document with URIs to resource, <i>resource_id</i></td><td>N/A</td></tr>
+            <tr><td>POST</td><td>/file</td><td>Uploads a new PDF document via bytestream</td><td>XML document with URIs to resource, <i>resource_id</i></td><td>N/A</td></tr>
             
-            <tr><td>GET</td><td>/<i>{resource_id}</i>/pdf</td><td>Used to download original PDF of resource</td><td>PDF document for resource</td><td>N/A</td></tr>
+            <tr><td>GET</td><td>/<i>{resource_id}</i>/file</td><td>Used to download original file of resource</td><td>PDF document for resource</td><td>N/A</td></tr>
             
             <tr><td>GET</td><td>/<i>{resource_id}</i>/header</td><td>Extracts the header information (authors, title, etc) from the resource</td><td>Representation of header information</td><td>output={xml (default) | json}</td></tr>
             
@@ -84,11 +84,11 @@
             <p>
             <b>Submit Document</b><br />
             Via form: <code>curl -F myfile=@/path/to/file.pdf "http://citeseerextractor.ist.psu.edu/extractor"</code>
-            Bytestream: <code>curl -X POST --data-binary @/path/to/file.pdf "http://citeseerextractor.ist.psu.edu/extractor/pdf"</code>
+            Bytestream: <code>curl -X POST --data-binary @/path/to/file.pdf "http://citeseerextractor.ist.psu.edu/extractor/file"</code>
             Returns: 
             <code>
             &lt;CSXAPIMetadata><br />
-						&lt;pdf>http://citeseerextractor.ist.psu.edu/extractor/<i>{resource_id}</i>/pdf&lt;/pdf><br />
+						&lt;file>http://citeseerextractor.ist.psu.edu/extractor/<i>{resource_id}</i>/file&lt;/file><br />
 						&lt;header>http://citeseerextractor.ist.psu.edu/extractor/<i>{resource_id}</i>/header&lt;/header><br />
 						&lt;citations>http://citeseerextractor.ist.psu.edu/extractor/<i>{resource_id}</i>/citations&lt;/citations><br />
 						&lt;body>http://citeseerextractor.ist.psu.edu/extractor/<i>{resource_id}</i>/body&lt;/body><br />
