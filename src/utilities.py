@@ -21,6 +21,9 @@ class Util:
 		Handles upload coming from web.input, write it to a temp file, and return the path to that temp file
 		"""
 		web.debug(inObject['myfile'].filename) # This is the filename
+                if not os.path.isdir(TMP_FOLDER): # Make sure the tmp folder exists
+                    web.debug("Temp folder " + TMP_FOLDER + " is missing. Recreating it.")
+                    os.mkdir(TMP_FOLDER, 0o700)
 		handler, path = tempfile.mkstemp(dir=TMP_FOLDER)
 		f = open(path,'w')
 		f.write(inObject['myfile'].file.read())
