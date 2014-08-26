@@ -8,7 +8,7 @@ import cgi
 import shutil
 import magic
 
-ROOT_FOLDER="./" # there must be a trailing /
+ROOT_FOLDER="../" # there must be a trailing /
 TMP_FOLDER=tempfile.gettempdir()+"/citeseerextractor/" #Specifies temp folder - useful for cleaning up afterwards
 
 class Util:

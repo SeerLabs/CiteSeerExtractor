@@ -4,7 +4,7 @@ import os
 import subprocess
 import shutil
 
-ROOT_FOLDER="./" # there must be a trailing /
+ROOT_FOLDER="../" # there must be a trailing /
 
 class Extraction:
 	"""
