@@ -97,7 +97,6 @@ class Handler(object):	# Super-class for the two handlers
 			#	"0" - Document is not academic -> Value error & Display error message
 			#	"-1" - OS error
 			# IV. Form and return XML response
-			params = web.input(filter="1")
 			typeFilterStatus = utilities.typeFilter(pdfpath)
 			web.debug(typeFilterStatus)
 			if typeFilterStatus == "application/pdf":
@@ -113,7 +112,7 @@ class Handler(object):	# Super-class for the two handlers
 				typeFilterStatus = "falsetype"
 				raise ValueError
 			web.debug(txtpath)
-			if params.filter != '0':
+			if 'filter=0' not in web.ctx.env.get('QUERY_STRING'):
 				acaFilterStatus = utilities.academicFilter(txtpath)
 				web.debug(acaFilterStatus)
 				if acaFilterStatus == "-1":
