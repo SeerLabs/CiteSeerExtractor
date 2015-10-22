@@ -68,6 +68,8 @@
             
             <tr><td>GET</td><td>/<i>{resource_id}</i>/citations</td><td>Extracts the citations from the resource</td><td>Representation of the citations</td><td>output={xml (default) | json}</td></tr>
             
+            <tr><td>GET</td><td>/<i>{resource_id}</i>/keyphrases</td><td>Extracts the keyphrases from the resource</td><td>Representation of the keyphrases</td><td>output={xml (default) | json}</td></tr>
+            
             <tr><td>GET</td><td>/<i>{resource_id}</i>/body</td><td>Extracts the body (text excluding header and citations) from the resource</td><td>Representation of the body</td><td>output={xml (default) | json}</td></tr>
             
             <tr><td>GET</td><td>/<i>{resource_id}</i>/text</td><td>Extracts the full text from the resource</td><td>Full text of resource</td><td>N/A</td></tr>
@@ -81,23 +83,23 @@
             
             <p>
             <b>Submit Document</b><br />
-            Via form: <code>curl -F myfile=@/path/to/file.pdf "http://citeseerextractor.ist.psu.edu/extractor"</code>
-            Bytestream: <code>curl -X POST --data-binary @/path/to/file.pdf "http://citeseerextractor.ist.psu.edu/extractor"</code>
+            Via form: <code>curl -F myfile=@/path/to/file.pdf "http://citeseerextractor.ist.psu.edu:8080/extractor"</code>
+            Bytestream: <code>curl -X POST --data-binary @/path/to/file.pdf "http://citeseerextractor.ist.psu.edu:8080/extractor"</code>
             Returns: 
             <code>
             &lt;CSXAPIMetadata><br />
-						&lt;pdf>http://citeseerextractor.ist.psu.edu/extractor/<i>{resource_id}</i>/pdf&lt;/pdf><br />
-						&lt;header>http://citeseerextractor.ist.psu.edu/extractor/<i>{resource_id}</i>/header&lt;/header><br />
-						&lt;citations>http://citeseerextractor.ist.psu.edu/extractor/<i>{resource_id}</i>/citations&lt;/citations><br />
-						&lt;body>http://citeseerextractor.ist.psu.edu/extractor/<i>{resource_id}</i>/body&lt;/body><br />
-						&lt;text>http://citeseerextractor.ist.psu.edu/extractor/<i>{resource_id}</i>/text&lt;/text><br />
+						&lt;pdf>http://citeseerextractor.ist.psu.edu:8080/extractor/<i>{resource_id}</i>/pdf&lt;/pdf><br />
+						&lt;header>http://citeseerextractor.ist.psu.edu:8080/extractor/<i>{resource_id}</i>/header&lt;/header><br />
+						&lt;citations>http://citeseerextractor.ist.psu.edu:8080/extractor/<i>{resource_id}</i>/citations&lt;/citations><br />
+						&lt;body>http://citeseerextractor.ist.psu.edu:8080/extractor/<i>{resource_id}</i>/body&lt;/body><br />
+						&lt;text>http://citeseerextractor.ist.psu.edu:8080/extractor/<i>{resource_id}</i>/text&lt;/text><br />
 						&lt;/CSXAPIMetadata><br />
 						</code>
             </p>
             
             <p>
             <b>Retrieve Content</b><br>
-            <code>curl http://citeseerextractor.ist.psu.edu/extractor/<i>{resource_id}</i>/<b>header</b> (replace header with citations, body, etc)</code>
+            <code>curl http://citeseerextractor.ist.psu.edu:8080/extractor/<i>{resource_id}</i>/<b>header</b> (replace header with citations, body, etc)</code>
             Returns:<code>
             &lt;?xml version="1.0" encoding="UTF-8"?><br />
 						&lt;CSXAPIMetadata><br />
@@ -118,7 +120,7 @@
 						<p>
             <b>Delete</b><br>
             From time to time the uploaded documents are manually removed. However, you can explicitly remove a document if you want.
-            <code>curl -X DELETE http://citeseerextractor.ist.psu.edu/extractor/<i>{resource_id}</i></code>
+            <code>curl -X DELETE http://citeseerextractor.ist.psu.edu:8080/extractor/<i>{resource_id}</i></code>
             Returns:<code>DELETED <i>resource_id</i></code>
             </p>
 			
