@@ -26,3 +26,10 @@ class Extraction:
 		body = subprocess.check_output([ROOT_FOLDER+"bin/getBody.pl",path])
 		web.debug(body)
 		return body
+	def extractKeyphrases(self,path):
+		"""extract keyphrases from text file"""
+		# keyphrases = subprocess.check_output(["pwd"], cwd=ROOT_FOLDER)
+		keyphrases = subprocess.check_output(["java", "-cp", "lib/Maui/simseer.jar:lib/Maui/maui-1.1.jar:lib/Maui/weka.jar:lib/Maui/wikipediaminer1.1.jar", "edu.psu.ist.simseerx.keyphrase.KeyPhrases", path], cwd=ROOT_FOLDER)
+		keyphrases = keyphrases.replace('\n', '; ')
+		web.debug(keyphrases)
+		return keyphrases

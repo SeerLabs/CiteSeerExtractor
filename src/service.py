@@ -14,7 +14,7 @@ urls = (
 '/', 'Index',
 '/extractor', 'FileHandler', # For uploading a file
 '/extractor/file', 'PDFStreamHandler', # For uploading any binary data stream
-'/extractor/(.+)/(header|citations|body|text|file)', 'Extractor', # For retrieving file information
+'/extractor/(.+)/(header|citations|body|text|file|keyphrases)', 'Extractor', # For retrieving file information
 '/extractor/(.+)', 'FileHandler', # For deleting a file
 
 )
@@ -64,6 +64,8 @@ class Extractor:
 					data = data + extractor.extractCitations(txtfile)
 				elif method == 'body':
 					data = data + extractor.extractBody(txtfile)
+				elif method == 'keyphrases':
+					data = data + extractor.extractKeyphrases(txtfile)
 				#Print XML or JSON
 				if params.output == 'xml' or params.output == '':
 					web.header('Content-Type','text/xml; charset=utf-8')
@@ -105,7 +107,7 @@ class Handler(object):	# Super-class for the two handlers
 				os.rename(pdfpath, pdfpath + ".ps")
 				txtpath = utilities.ps2text(pdfpath)
 				os.rename(pdfpath + ".ps", pdfpath)
-			elif "text" in typeFilterStatus:
+			elif "text" in typeFilterStatus or "message" in typeFilterStatus:
 				shutil.copy(pdfpath, pdfpath + ".txt")
 				txtpath = pdfpath + ".txt"
 			else:
