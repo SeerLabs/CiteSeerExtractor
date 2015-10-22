@@ -30,6 +30,10 @@ class Extraction:
 		"""extract keyphrases from text file"""
 		# keyphrases = subprocess.check_output(["pwd"], cwd=ROOT_FOLDER)
 		keyphrases = subprocess.check_output(["java", "-cp", "lib/Maui/simseer.jar:lib/Maui/maui-1.1.jar:lib/Maui/weka.jar:lib/Maui/wikipediaminer1.1.jar", "edu.psu.ist.simseerx.keyphrase.KeyPhrases", path], cwd=ROOT_FOLDER)
-		keyphrases = keyphrases.replace('\n', '; ')
-		web.debug(keyphrases)
-		return keyphrases
+		kp_string = "<keyphrases>"
+		kp_list = keyphrases.split('\n')
+		for kp in kp_list:
+			kp_string += "<keyphrase>" + kp + "</keyphrase>"
+		kp_string += "</keyphrases>"
+		web.debug(kp_string)
+		return kp_string
