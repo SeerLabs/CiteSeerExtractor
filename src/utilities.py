@@ -29,6 +29,7 @@ class Util:
 		f.write(inObject['myfile'].file.read())
 		f.close()
 		web.debug(path)
+                os.close(handler)
 		return path
 	
 	def pdf2text(self, path):
